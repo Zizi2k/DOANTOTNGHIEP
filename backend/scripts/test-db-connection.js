@@ -1,5 +1,5 @@
 const mysql = require('mysql2/promise');
-require('dotenv').config({ path: require('path').join(__dirname, '../.env.railway') });
+require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 
 async function main() {
   const conn = await mysql.createConnection({
