@@ -1,7 +1,9 @@
+{/* Sidebar.jsx — Menu điều hướng chính, ẩn/hiện mục theo vai trò */}
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { isSuperAdmin } from '../../utils/adminScope';
 
+/** Một link sidebar; props: to, icon, label, end */
 function NavItem({ to, icon, label, end = false }) {
   return (
     <NavLink
@@ -17,6 +19,7 @@ function NavItem({ to, icon, label, end = false }) {
   );
 }
 
+/** props: collapsed, mobileOpen, onNavigate — đóng menu mobile sau khi chọn */
 export default function Sidebar({ collapsed, mobileOpen, onNavigate }) {
   const { user } = useAuth();
   const isAdmin = user?.role === 'admin';

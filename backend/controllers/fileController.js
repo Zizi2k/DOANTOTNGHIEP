@@ -1,5 +1,14 @@
+/**
+ * Controller tệp tin (File)
+ * Phục vụ tải/xem tệp đã lưu trong DB theo token công khai (file_assets).
+ */
 const pool = require('../config/db');
 
+/**
+ * GET /files/:token — Tải hoặc xem inline tệp theo token.
+ * @param {string} req.params.token - Token duy nhất của file_assets
+ * @returns {200} binary stream với Content-Disposition inline
+ */
 const downloadFile = async (req, res) => {
   try {
     const [rows] = await pool.query(

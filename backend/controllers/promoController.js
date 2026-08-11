@@ -1,3 +1,7 @@
+/**
+ * Controller quảng bá / đăng ký khóa (Promo)
+ * Banner, khóa học quảng bá theo nhánh HG/EG, đăng ký và join lớp sau duyệt.
+ */
 const pool = require('../config/db');
 const { saveMulterFile } = require('../utils/fileStorage');
 const { getUserScope, isSuperAdmin } = require('../utils/adminScope');
@@ -148,6 +152,7 @@ function applyBranchFilter(sql, params, listScope, { includeAllScope = false } =
   return { sql, params };
 }
 
+/** GET /promo/banners — Danh sách banner theo phạm vi nhánh người xem. */
 const listBanners = async (req, res) => {
   try {
     const listScope = await effectiveListScope(req);
@@ -169,6 +174,7 @@ const listBanners = async (req, res) => {
   }
 };
 
+/** GET /promo/courses — Khóa quảng bá + trạng thái đăng ký/join của học viên. */
 const listCourses = async (req, res) => {
   try {
     const listScope = await effectiveListScope(req);
@@ -270,6 +276,7 @@ const listCourses = async (req, res) => {
   }
 };
 
+/** POST /promo/banners — Tạo banner (admin, theo branch_scope). */
 const createBanner = async (req, res) => {
   try {
     const {
@@ -320,6 +327,7 @@ const createBanner = async (req, res) => {
   }
 };
 
+/** PUT /promo/banners/:id — Cập nhật banner. */
 const updateBanner = async (req, res) => {
   try {
     const [existingRows] = await pool.query('SELECT * FROM promo_banners WHERE id = ?', [req.params.id]);
@@ -378,6 +386,7 @@ const updateBanner = async (req, res) => {
   }
 };
 
+/** DELETE /promo/banners/:id — Xóa banner. */
 const deleteBanner = async (req, res) => {
   try {
     const [existingRows] = await pool.query('SELECT * FROM promo_banners WHERE id = ?', [req.params.id]);
@@ -496,6 +505,7 @@ async function findClassByCode(classCode) {
   return rows[0] || null;
 }
 
+/** POST /promo/courses — Tạo khóa quảng bá (giá, giảm giá, mã lớp). */
 const createCourse = async (req, res) => {
   try {
     const {
@@ -566,6 +576,7 @@ const createCourse = async (req, res) => {
   }
 };
 
+/** PUT /promo/courses/:id — Cập nhật khóa quảng bá. */
 const updateCourse = async (req, res) => {
   try {
     const [existingRows] = await pool.query('SELECT * FROM promo_courses WHERE id = ?', [req.params.id]);
@@ -638,6 +649,7 @@ const updateCourse = async (req, res) => {
   }
 };
 
+/** DELETE /promo/courses/:id — Xóa khóa quảng bá. */
 const deleteCourse = async (req, res) => {
   try {
     const [existingRows] = await pool.query('SELECT * FROM promo_courses WHERE id = ?', [req.params.id]);
@@ -680,6 +692,7 @@ async function assertTeacherOwnsStudent(teacherId, studentId) {
   return rows.length > 0;
 }
 
+/** POST /promo/courses/:id/register — Gửi yêu cầu đăng ký (HS/GV thay HS/admin). */
 const registerCourse = async (req, res) => {
   try {
     const courseId = parseInt(req.params.id, 10);
@@ -784,6 +797,7 @@ const registerCourse = async (req, res) => {
   }
 };
 
+/** GET /promo/registrations — Danh sách đăng ký (lọc theo vai trò). */
 const listRegistrations = async (req, res) => {
   try {
     let sql = `
@@ -829,6 +843,7 @@ const listRegistrations = async (req, res) => {
   }
 };
 
+/** PATCH /promo/registrations/:id — Admin cập nhật trạng thái đăng ký. */
 const updateRegistrationStatus = async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
@@ -871,6 +886,7 @@ const updateRegistrationStatus = async (req, res) => {
   }
 };
 
+/** GET /promo/teacher-students — HV để GV/admin chọn đăng ký hộ. */
 const listTeacherStudents = async (req, res) => {
   try {
     if (req.user.role !== 'teacher' && req.user.role !== 'admin') {

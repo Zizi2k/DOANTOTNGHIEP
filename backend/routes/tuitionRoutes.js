@@ -1,3 +1,7 @@
+/*
+ * tuitionRoutes.js — Route học phí: hồ sơ, thanh toán, giảm giá, kỳ thu, báo cáo, biên lai.
+ * Prefix mount: /api/tuition
+ */
 const express = require('express');
 const { authenticate, authorize } = require('../middleware/auth');
 const excelUpload = require('../middleware/excelUpload');
@@ -19,12 +23,14 @@ const router = express.Router();
 
 router.use(authenticate);
 
+// Học viên xem biên lai của mình
 router.get('/student/receipts', authorize('student'), getStudentReceipts);
 router.get('/payments/:id/receipt', authorize('admin', 'student'), getPaymentReceiptPdf);
 
-// Teachers need discounts when adding students with tuition in a class
+// Giáo viên cần danh sách giảm giá khi thêm học viên kèm học phí trong lớp
 router.get('/discounts', authorize('admin', 'teacher'), getDiscounts);
 
+// Các thao tác quản trị học phí chỉ dành cho admin
 router.use(authorize('admin'));
 
 router.post('/discounts', createDiscount);

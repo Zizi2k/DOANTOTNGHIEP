@@ -1,3 +1,5 @@
+// Hàm tính học phí sau giảm giá và cập nhật field form học phí
+/** Tính số tiền sau khi áp dụng giảm giá (% hoặc số tiền cố định) */
 export function calculateFeeAfterDiscount(feeBefore, discount) {
   const before = Number(feeBefore) || 0;
   if (!discount) return before;
@@ -16,6 +18,7 @@ export function findDiscount(discounts, discountId) {
 }
 
 /** Cập nhật form học phí khi đổi HP / mức giảm */
+/** Đồng bộ fee_after khi đổi discount hoặc fee_before trên form */
 export function applyTuitionFieldChange(prev, field, value, discounts = []) {
   const next = { ...prev, [field]: value };
 

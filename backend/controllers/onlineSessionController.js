@@ -1,3 +1,7 @@
+/**
+ * Controller lớp học online (Online Session)
+ * Tạo phòng học trực tuyến (room_code), kết thúc và xóa phiên.
+ */
 const crypto = require('crypto');
 const pool = require('../config/db');
 const { assertClassAccess } = require('../middleware/classAccess');
@@ -9,6 +13,7 @@ function generateRoomCode(classId) {
   return `lhg-c${classId}-${rand}`;
 }
 
+/** GET /online-sessions — Danh sách phiên theo class_id. */
 const getSessions = async (req, res) => {
   try {
     const classId = req.query.class_id;
@@ -36,6 +41,10 @@ const getSessions = async (req, res) => {
   }
 };
 
+/**
+ * POST /online-sessions — Tạo phòng mới; tự đóng phiên active cũ của lớp.
+ * Body: class_id, title.
+ */
 const createSession = async (req, res) => {
   try {
     const { class_id, title } = req.body;
@@ -80,6 +89,7 @@ const createSession = async (req, res) => {
   }
 };
 
+/** POST /online-sessions/:id/end — Kết thúc phiên (is_active=false). */
 const endSession = async (req, res) => {
   try {
     const [sessions] = await pool.query(
@@ -101,6 +111,7 @@ const endSession = async (req, res) => {
   }
 };
 
+/** DELETE /online-sessions/:id — Xóa phòng (có thể qua luồng duyệt xóa). */
 const deleteSession = async (req, res) => {
   try {
     const [sessions] = await pool.query(

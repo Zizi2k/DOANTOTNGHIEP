@@ -1,3 +1,7 @@
+/**
+ * Ghi log hành động người dùng (audit trail).
+ * Lưu actor, loại hành động, tài nguyên và metadata JSON.
+ */
 const pool = require('../config/db');
 
 const ACTION_LABELS = {
@@ -25,6 +29,7 @@ const RESOURCE_LABELS = {
   discussion: 'Thảo luận',
 };
 
+/** Ghi một bản ghi audit log */
 async function logAction({
   actorId,
   action,

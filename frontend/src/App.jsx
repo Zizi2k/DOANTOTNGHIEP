@@ -1,3 +1,4 @@
+{/* App.jsx — Cấu hình routing chính: đăng nhập, layout bảo vệ và các trang nghiệp vụ */}
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import AuthSessionHandler from './components/auth/AuthSessionHandler';
@@ -19,6 +20,7 @@ import MyReceiptsPage from './pages/MyReceiptsPage';
 import ProfilePage from './pages/ProfilePage';
 import PromoCoursesPage from './pages/PromoCoursesPage';
 
+/** Component gốc: bọc AuthProvider, xử lý phiên và định nghĩa toàn bộ route */
 function App() {
   return (
     <AuthProvider>
@@ -26,6 +28,7 @@ function App() {
         <AuthSessionHandler />
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          {/* Các trang yêu cầu đăng nhập, dùng chung MainLayout (sidebar + topbar) */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/classes" element={<ClassesPage />} />

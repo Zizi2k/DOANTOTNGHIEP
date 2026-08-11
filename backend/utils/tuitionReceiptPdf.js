@@ -1,3 +1,6 @@
+/**
+ * In phiếu thu học phí PDF theo mẫu 01-TT (Thông tư 132/2018/TT-BTC).
+ */
 const pdfmake = require('pdfmake');
 const vfs = require('pdfmake/build/vfs_fonts.js');
 
@@ -28,6 +31,7 @@ function labelLine(label, value, width = '*') {
   };
 }
 
+/** Tạo buffer PDF phiếu thu từ dữ liệu đã chuẩn hóa (buildReceiptData) */
 function buildTuitionReceiptPdf(receipt) {
   const { org, paymentDate, receiptNo, bookNo } = receipt;
 

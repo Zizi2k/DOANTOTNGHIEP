@@ -1,3 +1,7 @@
+/*
+ * scheduleRoutes.js — Route lịch học 1-1: slot giáo viên, đặt/hủy lịch học viên.
+ * Prefix mount: /api/schedule
+ */
 const express = require('express');
 const {
   getMonthSchedule,

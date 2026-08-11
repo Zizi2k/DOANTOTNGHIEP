@@ -1,8 +1,16 @@
+/**
+ * Controller bảng điều khiển (Dashboard)
+ * Thống kê tổng quan theo vai trò và bảng vinh danh điểm số theo lớp.
+ */
 const pool = require('../config/db');
 const { mapPublicHonorEntries } = require('../utils/userProjection');
 const { assertClassAccess } = require('../middleware/classAccess');
 const { teachingStaffRoleSql } = require('../utils/teachingStaff');
 
+/**
+ * GET /dashboard — Số liệu tổng quan (lớp, bài tập, quiz, điểm TB).
+ * Admin: toàn hệ thống; giáo viên: lớp phụ trách; học viên: thêm submittedCount, missingCount.
+ */
 const getDashboard = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -90,6 +98,10 @@ const getDashboard = async (req, res) => {
   }
 };
 
+/**
+ * GET /dashboard/honor-board — Top 20 học viên điểm cao trong lớp.
+ * Query: class_id (bắt buộc). Gộp điểm bài tập + quiz.
+ */
 const getHonorBoard = async (req, res) => {
   try {
     const classId = req.query.class_id;

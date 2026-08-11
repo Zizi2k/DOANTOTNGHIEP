@@ -1,3 +1,4 @@
+{/* ClassDetailPage.jsx — Chi tiết lớp: tab thành viên, bài học, bài tập, điểm danh */}
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import {
@@ -36,6 +37,7 @@ import { API_BASE } from '../config/apiBase';
 import LoadingOverlay from '../components/common/LoadingOverlay';
 import { preserveScrollDuring } from '../utils/scrollPreserve';
 
+/** Trang lớp theo :id — ModuleTabs và quyền GV/học viên */
 export default function ClassDetailPage() {
   const { id } = useParams();
   const [searchParams] = useSearchParams();

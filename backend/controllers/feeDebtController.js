@@ -1,3 +1,7 @@
+/**
+ * Controller nợ phí (Fee Debt)
+ * Quản lý hồ sơ học viên nghỉ học còn nợ phí — chỉ admin.
+ */
 const pool = require('../config/db');
 const { getUserScope, studentCodeMatchesScope } = require('../utils/adminScope');
 const { logAction } = require('../utils/auditLog');
@@ -12,6 +16,7 @@ function scopeFilterSql(user, alias = 'fdr') {
   };
 }
 
+/** GET /fee-debts — Danh sách nợ phí (total_debt > 0), lọc theo phạm vi nhánh admin. */
 const listFeeDebts = async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
@@ -39,6 +44,10 @@ const listFeeDebts = async (req, res) => {
   }
 };
 
+/**
+ * DELETE /fee-debts/:id — Xóa hồ sơ nợ và purge dữ liệu học viên liên quan.
+ * Body: confirm_purge=true (bắt buộc xác nhận).
+ */
 const deleteFeeDebt = async (req, res) => {
   const conn = await pool.getConnection();
   try {

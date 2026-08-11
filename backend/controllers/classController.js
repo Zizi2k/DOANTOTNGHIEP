@@ -1,3 +1,7 @@
+/**
+ * Controller lớp học (Class)
+ * CRUD lớp, thành viên (học viên/giáo viên), mã HV, học phí khi thêm HV và đánh dấu thu khóa mới.
+ */
 const pool = require('../config/db');
 const {
   buildStudentUsername, extractStudentNumber, ensureUniqueUsername, regenerateClassUsernames,
@@ -59,6 +63,7 @@ function validateTuitionFields(tuition = {}) {
   return null;
 }
 
+/** GET /classes — Danh sách lớp (lọc search, teacher, prefix nhánh). */
 const getClasses = async (req, res) => {
   try {
     const search = (req.query.search || '').trim();
@@ -148,6 +153,7 @@ const getClasses = async (req, res) => {
   }
 };
 
+/** GET /classes/:id — Chi tiết lớp + thành viên (kèm trạng thái học phí). */
 const getClassById = async (req, res) => {
   try {
     const classId = req.params.id;
@@ -220,6 +226,7 @@ const getClassById = async (req, res) => {
   }
 };
 
+/** POST /classes — Tạo lớp mới. */
 const createClass = async (req, res) => {
   try {
     const { name, description, subject, code } = req.body;
@@ -243,6 +250,7 @@ const createClass = async (req, res) => {
   }
 };
 
+/** PUT /classes/:id — Cập nhật thông tin lớp. */
 const updateClass = async (req, res) => {
   try {
     const { name, description, subject, code } = req.body;
@@ -267,6 +275,7 @@ const updateClass = async (req, res) => {
 
 const { saveMulterFile } = require('../utils/fileStorage');
 
+/** POST /classes/:id/avatar — Upload ảnh đại diện lớp. */
 const uploadClassAvatar = async (req, res) => {
   try {
     if (!req.file) {
@@ -282,6 +291,7 @@ const uploadClassAvatar = async (req, res) => {
   }
 };
 
+/** POST /classes/:id/members — Thêm học viên có sẵn vào lớp. */
 const addMember = async (req, res) => {
   try {
     const { user_id } = req.body;
@@ -313,6 +323,7 @@ const addMember = async (req, res) => {
   }
 };
 
+/** GET /classes/:id/available-students — Học viên chưa thuộc lớp (theo phạm vi mã). */
 const getAvailableStudents = async (req, res) => {
   try {
     const scopeFilter = appendStudentCodeScopeSql(req.user, 'u.code');
@@ -332,6 +343,7 @@ const getAvailableStudents = async (req, res) => {
   }
 };
 
+/** GET /classes/:id/next-student-code — Sinh mã HV tiếp theo theo môn lớp. */
 const getNextStudentCodeForClass = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -363,6 +375,10 @@ const getNextStudentCodeForClass = async (req, res) => {
   }
 };
 
+/**
+ * POST /classes/:id/students — Tạo/thêm học viên mới (có thể kèm hồ sơ học phí).
+ * Transaction: user + class_members + tuition_profiles + regenerate usernames.
+ */
 const createStudentMember = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -512,6 +528,7 @@ const createStudentMember = async (req, res) => {
   }
 };
 
+/** PUT /classes/:id/students/:userId — Sửa mã, tên, liên hệ học viên trong lớp. */
 const updateStudentMember = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -577,6 +594,7 @@ const updateStudentMember = async (req, res) => {
   }
 };
 
+/** POST /classes/:id/sync-usernames — Đồng bộ username HV theo quy tắc họ tên + số mã. */
 const syncUsernames = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -595,6 +613,7 @@ const syncUsernames = async (req, res) => {
   }
 };
 
+/** DELETE /classes/:id/members/:userId — Xóa thành viên (luồng duyệt xóa nếu cần). */
 const removeMember = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -641,6 +660,7 @@ const removeMember = async (req, res) => {
   }
 };
 
+/** DELETE /classes/:id/students — Xóa toàn bộ học viên khỏi lớp. */
 const removeAllStudents = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -705,6 +725,7 @@ const removeAllStudents = async (req, res) => {
   }
 };
 
+/** DELETE /classes/:id — Xóa lớp học. */
 const deleteClass = async (req, res) => {
   try {
     const [classes] = await pool.query('SELECT id, name FROM classes WHERE id = ?', [req.params.id]);
@@ -725,6 +746,7 @@ const deleteClass = async (req, res) => {
   }
 };
 
+/** GET /classes/:id/available-teachers — GV/admin chưa gán lớp, khớp nhánh lớp. */
 const getAvailableTeachers = async (req, res) => {
   try {
     const classId = req.params.id;
@@ -749,6 +771,7 @@ const getAvailableTeachers = async (req, res) => {
   }
 };
 
+/** POST /classes/:id/teachers — Thêm giáo viên vào lớp. */
 const addTeacher = async (req, res) => {
   try {
     const { user_id } = req.body;
@@ -785,6 +808,7 @@ const addTeacher = async (req, res) => {
   }
 };
 
+/** DELETE /classes/:id/teachers/:userId — Gỡ giáo viên khỏi lớp. */
 const removeTeacher = async (req, res) => {
   try {
     const [member] = await pool.query(
@@ -812,6 +836,7 @@ const removeTeacher = async (req, res) => {
   }
 };
 
+/** GET /classes/share-targets — Lớp đích để chia sẻ nội dung (quiz/bài tập). */
 const getShareTargetClasses = async (req, res) => {
   try {
     const excludeId = Number(req.query.exclude_class_id) || null;
@@ -858,8 +883,8 @@ const getShareTargetClasses = async (req, res) => {
 };
 
 /**
- * Mark student as paid-enough / ready for new fee cycle.
- * Keeps the student in class_members — only flags tuition_profiles.
+ * PATCH /classes/:id/members/:userId/fee-renewal — Đánh dấu HV đóng đủ, cần thu khóa mới.
+ * Chỉ cập nhật tuition_profiles, không xóa khỏi lớp.
  */
 const setMemberFeeRenewal = async (req, res) => {
   try {

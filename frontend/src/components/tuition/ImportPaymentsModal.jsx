@@ -1,7 +1,9 @@
+{/* ImportPaymentsModal.jsx — Import thanh toán học phí từ file Excel */}
 import { useState } from 'react';
 import { Modal, Form, Button, Alert } from 'react-bootstrap';
 import { tuitionService } from '../../services';
 
+/** props: show, onHide, onSuccess */
 export default function ImportPaymentsModal({ show, onHide, onSuccess }) {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);

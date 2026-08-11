@@ -1,3 +1,4 @@
+{/* AttendancePage.jsx — Điểm danh tổng hợp theo lớp và tháng */}
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -21,6 +22,7 @@ function currentMonthValue() {
   return `${y}-${m}`;
 }
 
+/** Danh sách buổi điểm danh, xuất PDF tháng */
 export default function AttendancePage() {
   const { user } = useAuth();
   const [reports, setReports] = useState([]);

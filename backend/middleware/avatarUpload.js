@@ -1,3 +1,6 @@
+/*
+ * avatarUpload.js — Upload ảnh đại diện người dùng (ghi đè theo user id, tối đa 2MB).
+ */
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -7,6 +10,7 @@ if (!fs.existsSync(avatarDir)) {
   fs.mkdirSync(avatarDir, { recursive: true });
 }
 
+// Mỗi user một file: user-{id}.{ext}
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, avatarDir),
   filename: (req, file, cb) => {

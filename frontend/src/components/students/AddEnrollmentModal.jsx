@@ -1,3 +1,4 @@
+{/* AddEnrollmentModal.jsx — Modal ghi danh học viên vào khóa/lớp */}
 import { useEffect, useMemo, useState } from 'react';
 import {
   Modal, Form, Button, Alert, Spinner, Row, Col,
@@ -34,6 +35,7 @@ const emptyForm = {
   ...emptyTuition,
 };
 
+/** Form ghi danh đa bước — props: show, onHide, onSuccess, initialSubject */
 export default function AddEnrollmentModal({
   show,
   onHide,

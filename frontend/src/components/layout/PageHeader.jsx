@@ -1,3 +1,5 @@
+{/* PageHeader.jsx — Tiêu đề trang module kèm subtitle và nút hành động */}
+/** props: title, subtitle, actions, icon (class bi) */
 export default function PageHeader({ title, subtitle, actions, icon = 'bi-grid-1x2' }) {
   return (
     <header className="module-hero">

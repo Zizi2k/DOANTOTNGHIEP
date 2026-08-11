@@ -1,12 +1,18 @@
+/**
+ * Hiển thị và ẩn nội dung học tập theo thời gian (visible_from) và cờ is_hidden.
+ * Dùng cho bài giảng, bài tập, bài kiểm tra khi học viên truy cập.
+ */
 const STUDENT_VISIBILITY_SQL = `
   AND (COALESCE({alias}.is_hidden, 0) = 0)
   AND ({alias}.visible_from IS NULL OR {alias}.visible_from <= NOW())
 `;
 
+/** Tạo mệnh đề SQL lọc nội dung visible cho học viên */
 function studentVisibilityClause(tableAlias = 't') {
   return STUDENT_VISIBILITY_SQL.replace(/\{alias\}/g, tableAlias);
 }
 
+/** Chuẩn hóa datetime từ nhiều format sang MySQL DATETIME */
 function normalizeDatetimeForMysql(value) {
   if (value == null || value === '') return null;
 
@@ -36,6 +42,7 @@ function parseIsHidden(value) {
     || value === '1';
 }
 
+/** Parse visible_from và is_hidden từ request body */
 function parseVisibilityFields(body = {}) {
   const visibleFrom = body.visible_from !== undefined
     ? normalizeDatetimeForMysql(body.visible_from)
@@ -51,6 +58,7 @@ function parseVisibilityFields(body = {}) {
   };
 }
 
+/** Kiểm tra item có hiển thị cho học viên tại thời điểm hiện tại */
 function isVisibleToStudent(item) {
   if (!item) return false;
   if (item.is_hidden === 1 || item.is_hidden === true) return false;

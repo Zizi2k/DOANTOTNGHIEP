@@ -1,5 +1,7 @@
+{/* ShrinkFitText.jsx — Tự thu nhỏ font để văn bản vừa một dòng */}
 import { useEffect, useRef } from 'react';
 
+/** props: children, className, minFontSize, maxFontSize */
 export default function ShrinkFitText({
   as: Component = 'span',
   className = '',

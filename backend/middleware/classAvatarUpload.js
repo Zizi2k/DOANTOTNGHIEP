@@ -1,3 +1,7 @@
+/*
+ * classAvatarUpload.js — Upload ảnh đại diện lớp học (JPG/PNG/GIF/WEBP, tối đa 3MB).
+ * Tên file gắn class id để dễ tra cứu trên đĩa.
+ */
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');

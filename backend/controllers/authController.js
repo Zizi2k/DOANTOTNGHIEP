@@ -1,9 +1,19 @@
+/**
+ * Controller xác thực (Auth)
+ * Xử lý đăng nhập, đăng xuất, đăng ký tài khoản và quản lý hồ sơ cá nhân của người dùng đang đăng nhập.
+ */
 const jwt = require('jsonwebtoken');
 const pool = require('../config/db');
 const { saveMulterFile } = require('../utils/fileStorage');
 const { findUserForStudentLogin, findStudentCodesForUser } = require('../utils/studentIdentity');
 const { SUBJECTS } = require('../utils/tuitionHelpers');
 
+/**
+ * POST /auth/login — Đăng nhập bằng username + mã (code).
+ * @param {string} req.body.username - Tên đăng nhập
+ * @param {string} req.body.code - Mã xác thực (mã học viên hoặc mã tài khoản)
+ * @returns {200} token JWT và thông tin user
+ */
 const login = async (req, res) => {
   try {
     const { username, code } = req.body;
@@ -11,6 +21,7 @@ const login = async (req, res) => {
       return res.status(400).json({ message: 'Vui lòng nhập tên đăng nhập và mã' });
     }
 
+    // Ưu tiên tra cứu theo mã học viên đa môn, fallback bảng users
     let user = await findUserForStudentLogin(pool, username, code);
     if (!user) {
       const [rows] = await pool.query(
@@ -59,10 +70,17 @@ const login = async (req, res) => {
   }
 };
 
+/** POST /auth/logout — Đăng xuất (client xóa token). @returns {200} thông báo thành công */
 const logout = (_req, res) => {
   res.json({ message: 'Đăng xuất thành công' });
 };
 
+/**
+ * POST /auth/register — Tạo tài khoản mới.
+ * @param {string} req.body.fullname, username, code — Bắt buộc
+ * @param {string} [req.body.role='student'] — Vai trò
+ * @returns {201} thông tin user vừa tạo
+ */
 const register = async (req, res) => {
   try {
     const { fullname, username, code, role } = req.body;
@@ -89,6 +107,11 @@ const register = async (req, res) => {
   }
 };
 
+/**
+ * GET /auth/me — Lấy thông tin user hiện tại từ JWT.
+ * Với học viên: kèm danh sách mã học viên theo từng môn (student_codes).
+ * @returns {200} object user
+ */
 const getMe = async (req, res) => {
   try {
     const [rows] = await pool.query(
@@ -114,6 +137,11 @@ const getMe = async (req, res) => {
   }
 };
 
+/**
+ * PUT /auth/profile — Cập nhật hồ sơ cá nhân (fullname, username, code, phone, zalo, avatar).
+ * @param {File} [req.file] - Ảnh đại diện mới (multipart)
+ * @returns {200} user đã cập nhật
+ */
 const updateProfile = async (req, res) => {
   try {
     const { fullname, username, code } = req.body;

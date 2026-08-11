@@ -1,7 +1,9 @@
+{/* LoginNotificationModal.jsx — Popup thông báo chưa đọc khi học viên đăng nhập */}
 import { Modal, Button, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { notificationService } from '../../services';
 
+/** props: show, notifications, onHide, onRead */
 export default function LoginNotificationModal({ show, notifications, onHide, onRead }) {
   if (!notifications?.length) return null;
 

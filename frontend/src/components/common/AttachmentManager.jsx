@@ -1,3 +1,4 @@
+{/* AttachmentManager.jsx — UI thêm/xóa file và link đính kèm khi soạn nội dung */}
 import { useState } from 'react';
 import { Button, Form, Alert } from 'react-bootstrap';
 import {
@@ -17,6 +18,7 @@ function nextLinkKey() {
   return `link-${linkKeyCounter}`;
 }
 
+/** props: draft, onChange — state đính kèm dạng AttachmentDraft */
 export default function AttachmentManager({
   value,
   onChange,

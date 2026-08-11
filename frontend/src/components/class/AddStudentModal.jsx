@@ -1,3 +1,4 @@
+{/* AddStudentModal.jsx — Modal thêm học viên mới hoặc chọn từ danh sách có sẵn */}
 import { Modal, Form, Button, Alert, Spinner, Row, Col } from 'react-bootstrap';
 import { calcEndDate, formatDateVi } from '../students/studentConstants';
 import { isFeeAfterAutoCalculated } from '../tuition/tuitionDiscountCalc';
@@ -22,6 +23,7 @@ const emptyTuitionFields = {
   discount_reason: '',
 };
 
+/** Modal thêm HV — props: show, classId, onHide, onAdded */
 export default function AddStudentModal({
   show,
   onHide,

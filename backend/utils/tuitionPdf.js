@@ -1,3 +1,7 @@
+/**
+ * Xuất báo cáo học phí tháng ra PDF (pdfmake).
+ * Bảng chi tiết từng học viên kèm tổng hợp thu trong tháng.
+ */
 const pdfmake = require('pdfmake');
 const vfs = require('pdfmake/build/vfs_fonts.js');
 const { formatMonthYear, formatMoney } = require('./tuitionHelpers');
@@ -15,6 +19,7 @@ pdfmake.setFonts({
   },
 });
 
+/** Tạo buffer PDF báo cáo học phí tháng (landscape A4) */
 function buildMonthlyTuitionPdf({ subjectLabel, month, students, summary, classLabel }) {
   const header = [
     { text: 'STT', style: 'tableHeader', alignment: 'center' },

@@ -1,7 +1,12 @@
+/**
+ * Controller khóa đào tạo (Training Course)
+ * Quản lý khóa học nội bộ (training_courses): thời lượng, môn, gắn hồ sơ học phí.
+ */
 const pool = require('../config/db');
 const { SUBJECTS } = require('../utils/tuitionHelpers');
 const { logAction } = require('../utils/auditLog');
 
+/** GET /training-courses — Danh sách khóa. Query: subject, active_only. */
 const getCourses = async (req, res) => {
   try {
     const { subject, active_only } = req.query;
@@ -27,6 +32,7 @@ const getCourses = async (req, res) => {
   }
 };
 
+/** POST /training-courses — Tạo khóa đào tạo mới. */
 const createCourse = async (req, res) => {
   try {
     const { name, subject, duration_months, description, is_active } = req.body;
@@ -58,6 +64,7 @@ const createCourse = async (req, res) => {
   }
 };
 
+/** PUT /training-courses/:id — Cập nhật khóa đào tạo. */
 const updateCourse = async (req, res) => {
   try {
     const { name, subject, duration_months, description, is_active } = req.body;
@@ -87,6 +94,7 @@ const updateCourse = async (req, res) => {
   }
 };
 
+/** DELETE /training-courses/:id — Xóa nếu chưa gắn tuition_profiles. */
 const deleteCourse = async (req, res) => {
   try {
     const [used] = await pool.query(

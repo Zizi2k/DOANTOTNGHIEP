@@ -1,3 +1,6 @@
+/**
+ * Khung giờ học cố định và tiện ích ngày cho lịch học.
+ */
 const TIME_SLOTS = [
   { start: '07:00:00', end: '09:00:00', label: '7:00 – 9:00' },
   { start: '09:00:00', end: '11:00:00', label: '9:00 – 11:00' },
@@ -6,6 +9,7 @@ const TIME_SLOTS = [
   { start: '16:45:00', end: '18:45:00', label: '16:45 – 18:45' },
 ];
 
+/** Trả về danh sách ngày YYYY-MM-DD trong tháng */
 function getDaysInMonth(month) {
   if (!/^\d{4}-\d{2}$/.test(month || '')) return [];
   const [year, mon] = month.split('-').map(Number);
@@ -17,6 +21,7 @@ function getDaysInMonth(month) {
   return days;
 }
 
+/** Chuẩn hóa giá trị ngày về chuỗi YYYY-MM-DD */
 function toDateKey(val) {
   if (!val) return '';
   if (val instanceof Date) {
@@ -28,6 +33,7 @@ function toDateKey(val) {
   return String(val).slice(0, 10);
 }
 
+/** Tạo khóa duy nhất cho ô lịch: ngày + giờ bắt đầu */
 function slotKey(slotDate, startTime) {
   return `${toDateKey(slotDate)}_${startTime}`;
 }

@@ -1,3 +1,7 @@
+/**
+ * Controller quản lý học viên (Student Management)
+ * Tổng quan ghi danh, tạo/sửa hồ sơ học phí, chuyển lớp và gộp tài khoản trùng.
+ */
 const pool = require('../config/db');
 const {
   buildStudentUsername, extractStudentNumber, ensureUniqueUsername, regenerateClassUsernames,
@@ -56,6 +60,7 @@ async function fetchPaymentsForProfiles(profileIds) {
   return map;
 }
 
+/** GET /student-management/overview — Danh sách HV + summary trạng thái ghi danh. */
 const getOverview = async (req, res) => {
   try {
     const { subject, class_id, search, enrollment_status, code_prefix } = req.query;
@@ -120,6 +125,7 @@ const getOverview = async (req, res) => {
   }
 };
 
+/** GET /student-management/next-code — Mã HV tiếp theo theo môn. Query: subject, prefix. */
 const getNextCode = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -142,6 +148,7 @@ const getNextCode = async (req, res) => {
   }
 };
 
+/** POST /student-management/enrollments — Ghi danh mới (user + lớp + hồ sơ học phí). */
 const createEnrollment = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -284,6 +291,7 @@ const createEnrollment = async (req, res) => {
   }
 };
 
+/** PUT /student-management/enrollments/:id — Cập nhật hồ sơ, đổi lớp/mã HV. */
 const updateEnrollment = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -490,6 +498,7 @@ const updateEnrollment = async (req, res) => {
   }
 };
 
+/** POST /student-management/enrollments/:id/transfer — Chuyển HV sang lớp khác cùng môn. */
 const transferStudent = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -592,6 +601,7 @@ const transferStudent = async (req, res) => {
   }
 };
 
+/** POST /student-management/reconcile-duplicates — Gộp tài khoản HV trùng SĐT/tên. */
 const reconcileDuplicates = async (_req, res) => {
   try {
     const merged = await mergeDuplicateStudentsByPhone(pool);

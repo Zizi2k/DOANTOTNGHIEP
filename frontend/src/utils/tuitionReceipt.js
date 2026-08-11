@@ -1,6 +1,8 @@
+// Mở/tải biên lai học phí PDF qua API có token
 import { API_URL } from '../config/apiBase';
 import { tuitionService } from '../services';
 
+/** URL trực tiếp kèm token query (dùng khi cần link tĩnh) */
 export function getPaymentReceiptUrl(paymentId) {
   const token = localStorage.getItem('token');
   const base = API_URL.replace(/\/$/, '');
@@ -20,6 +22,7 @@ async function messageFromBlobError(data) {
   return 'Không thể tải phiếu thu';
 }
 
+/** Tải PDF biên lai và mở tab mới */
 export async function openPaymentReceipt(paymentId) {
   try {
     const res = await tuitionService.getPaymentReceipt(paymentId);

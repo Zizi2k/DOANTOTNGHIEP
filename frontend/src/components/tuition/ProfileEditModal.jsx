@@ -1,3 +1,4 @@
+{/* ProfileEditModal.jsx — Modal sửa hồ sơ học phí một học viên */}
 import { useEffect, useState } from 'react';
 import { Modal, Form, Button, Row, Col } from 'react-bootstrap';
 import { tuitionService } from '../../services';
@@ -12,6 +13,7 @@ const emptyForm = {
   discount_id: '', discount_reason: '',
 };
 
+/** props: show, onHide, profile, discounts, onSuccess */
 export default function ProfileEditModal({ show, onHide, profile, discounts, onSuccess }) {
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);

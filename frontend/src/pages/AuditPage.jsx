@@ -1,3 +1,4 @@
+{/* AuditPage.jsx — Nhật ký thao tác và duyệt yêu cầu xóa */}
 import { useEffect, useState } from 'react';
 import {
   Tab, Row, Col, Form, Button, Spinner, Badge, Modal, Alert,
@@ -30,6 +31,7 @@ function actionBadge(action) {
   return map[action] || 'light';
 }
 
+/** Tab log và tab duyệt xóa — admin tối cao */
 export default function AuditPage() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('logs');

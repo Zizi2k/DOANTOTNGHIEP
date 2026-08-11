@@ -1,3 +1,7 @@
+/*
+ * attendanceRoutes.js — Route điểm danh: phiên theo lớp, báo cáo, xuất PDF tháng.
+ * Prefix mount: /api/attendance
+ */
 const express = require('express');
 const {
   getSessionsByClass,

@@ -1,3 +1,4 @@
+{/* UserAvatar.jsx — Avatar người dùng; fallback chữ cái theo vai trò */}
 import { getAvatarUrl, getInitials } from '../utils/avatar';
 
 const roleColors = {
@@ -6,6 +7,7 @@ const roleColors = {
   student: '#6c757d',
 };
 
+/** props: user, size, className */
 export default function UserAvatar({ user, size = 40, className = '' }) {
   const avatarSrc = getAvatarUrl(user?.avatar_url);
   const initials = getInitials(user?.fullname);

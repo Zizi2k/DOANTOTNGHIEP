@@ -1,3 +1,4 @@
+{/* FeeDebtPage.jsx — Danh sách công nợ học phí chưa thu */}
 import { useEffect, useState } from 'react';
 import { Button, Badge, Spinner, Alert } from 'react-bootstrap';
 import { feeDebtService } from '../services';
@@ -8,6 +9,7 @@ function formatMoney(value) {
   return Number(value || 0).toLocaleString('vi-VN');
 }
 
+/** Xem và xóa bản ghi công nợ */
 export default function FeeDebtPage() {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -1,3 +1,4 @@
+{/* PaymentModal.jsx — Modal ghi nhận hoặc sửa thanh toán học phí */}
 import { useEffect, useState } from 'react';
 import { Modal, Form, Button, Row, Col } from 'react-bootstrap';
 import { tuitionService } from '../../services';
@@ -26,6 +27,7 @@ function formatMonthInput(value) {
   return s.length >= 7 ? s.slice(0, 7) : s;
 }
 
+/** Modal ghi/sửa thanh toán — props: show, profile, payment, onHide, onSuccess */
 export default function PaymentModal({
   show, onHide, profile, payment, onSuccess,
 }) {

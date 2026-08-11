@@ -1,3 +1,4 @@
+{/* ClassAttendanceTab.jsx — Tab điểm danh theo buổi trong lớp */}
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Button, Form, Alert, Card, Spinner,
@@ -30,6 +31,7 @@ function avatarColor(id) {
   return AVATAR_COLORS[id % AVATAR_COLORS.length];
 }
 
+/** Tab điểm danh buổi học — props: classId, canManage */
 export default function ClassAttendanceTab({
   classId, students, isTeacher, isStudent, currentUserId,
 }) {

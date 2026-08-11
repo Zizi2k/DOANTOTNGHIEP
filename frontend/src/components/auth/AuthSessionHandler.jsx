@@ -1,13 +1,16 @@
+{/* AuthSessionHandler.jsx — Lắng nghe hết phiên (401) và kiểm tra lại khi tab active */}
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { authService } from '../../services';
 
+/** Component vô hình: không render UI, chỉ xử lý sự kiện auth toàn cục */
 export default function AuthSessionHandler() {
   const navigate = useNavigate();
   const { logout, updateUser } = useAuth();
   const checkingRef = useRef(false);
 
+  // Đăng ký auth:unauthorized và auth:check-session từ interceptor API
   useEffect(() => {
     const onUnauthorized = () => {
       logout();
@@ -47,6 +50,7 @@ export default function AuthSessionHandler() {
     };
   }, [logout, navigate, updateUser]);
 
+  // Khi quay lại tab: xác minh token còn hợp lệ
   useEffect(() => {
     const onVisible = () => {
       if (document.visibilityState !== 'visible') return;

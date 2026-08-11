@@ -1,3 +1,7 @@
+/**
+ * Controller import phiếu thu (Tuition Payment Import)
+ * Ghi nhận hàng loạt khoản thu học phí/sách từ Excel.
+ */
 const XLSX = require('xlsx');
 const fs = require('fs');
 const pool = require('../config/db');
@@ -173,6 +177,7 @@ async function resolveProfile(conn, row) {
   throw new Error(`Không tìm thấy hồ sơ học phí cho mã ${studentCode}`);
 }
 
+/** POST /tuition/import/payments — Import phiếu thu từ Excel (transaction). */
 const importPayments = async (req, res) => {
   if (!req.file) return res.status(400).json({ message: 'Chưa chọn file Excel' });
 
@@ -256,6 +261,7 @@ const importPayments = async (req, res) => {
   }
 };
 
+/** GET /tuition/import/payments/template — Tải mẫu Excel thu tiền. */
 const downloadPaymentImportTemplate = async (_req, res) => {
   const headers = [
     'Mã học viên',

@@ -1,3 +1,7 @@
+/**
+ * Controller bài giảng / tài liệu (Lesson)
+ * Đăng và quản lý tài liệu học tập theo lớp (file/link đính kèm).
+ */
 const pool = require('../config/db');
 const { assertClassAccess } = require('../middleware/classAccess');
 const { handleDeletion } = require('../utils/deletionPolicy');
@@ -11,6 +15,7 @@ const {
   deleteAttachmentsForResource,
 } = require('../utils/contentAttachments');
 
+/** GET /classes/:classId/lessons — Danh sách tài liệu của lớp. */
 const getLessons = async (req, res) => {
   try {
     if (!(await assertClassAccess(req.user, req.params.classId, res))) return;
@@ -25,6 +30,7 @@ const getLessons = async (req, res) => {
   }
 };
 
+/** POST /classes/:classId/lessons — Tạo tài liệu (cần ít nhất 1 file/link). Quyền manage lớp. */
 const createLesson = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -70,6 +76,7 @@ const createLesson = async (req, res) => {
   }
 };
 
+/** DELETE /lessons/:id — Xóa bài giảng (có thể qua luồng duyệt xóa). */
 const deleteLesson = async (req, res) => {
   try {
     const [lessons] = await pool.query('SELECT id, title, class_id FROM lessons WHERE id = ?', [

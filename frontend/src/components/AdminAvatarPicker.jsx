@@ -1,8 +1,10 @@
+{/* AdminAvatarPicker.jsx — Upload/chọn avatar khi admin quản lý user */}
 import { useState } from 'react';
 import { Button, Spinner } from 'react-bootstrap';
 import { userService } from '../services';
 import UserAvatar from './UserAvatar';
 
+/** props: userId, user, onUploaded, disabled */
 export default function AdminAvatarPicker({
   userId, user, onUploaded, disabled = false,
 }) {

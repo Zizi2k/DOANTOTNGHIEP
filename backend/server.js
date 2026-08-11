@@ -1,3 +1,7 @@
+/*
+ * server.js — Điểm khởi động chính của API backend hệ thống quản lý học viên.
+ * Cấu hình Express, middleware toàn cục, đăng ký các route API và khởi chạy server.
+ */
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -28,10 +32,13 @@ const pool = require('./config/db');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Cho phép CORS từ mọi origin, hỗ trợ header Authorization cho JWT
 app.use(cors({
   origin: true,
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+// Bỏ qua parse JSON khi request là multipart (upload file)
 app.use((req, res, next) => {
   const contentType = req.headers['content-type'] || '';
   if (contentType.includes('multipart/form-data')) {
@@ -39,8 +46,11 @@ app.use((req, res, next) => {
   }
   express.json()(req, res, next);
 });
+
+// Phục vụ file tĩnh đã upload (avatar, tài liệu, ...)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Đăng ký các nhóm route API
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/classes', classRoutes);
@@ -60,10 +70,12 @@ app.use('/api/files', fileRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/promo', promoRoutes);
 
+// Kiểm tra sức khỏe API (không cần DB)
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'OK', message: 'API học trực tuyến đang hoạt động' });
 });
 
+// Kiểm tra kết nối cơ sở dữ liệu
 app.get('/api/health/db', async (_req, res) => {
   try {
     await pool.query('SELECT 1');
@@ -73,6 +85,7 @@ app.get('/api/health/db', async (_req, res) => {
   }
 });
 
+// Xử lý lỗi toàn cục: Multer (upload) và lỗi chung
 app.use((err, _req, res, _next) => {
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
@@ -83,6 +96,7 @@ app.use((err, _req, res, _next) => {
   res.status(err.status || 500).json({ message: err.message || 'Lỗi hệ thống' });
 });
 
+// Khởi động server và đồng bộ schema DB (migration nhẹ khi thiếu bảng/cột)
 app.listen(PORT, () => {
   console.log(`Server chạy tại http://localhost:${PORT}`);
   ensureSchema().catch((err) => {

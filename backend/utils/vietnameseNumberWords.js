@@ -1,5 +1,10 @@
+/**
+ * Chuyển số tiền sang chữ tiếng Việt (dùng trên phiếu thu).
+ * Hỗ trợ đến hàng tỷ, xử lý quy tắc đọc mốt/lăm/lẻ.
+ */
 const UNITS = ['không', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
 
+/** Đọc một nhóm 3 chữ số (hàng trăm/chục/đơn vị) */
 function readTriple(num, full) {
   const hundred = Math.floor(num / 100);
   const ten = Math.floor((num % 100) / 10);
@@ -29,6 +34,7 @@ function readTriple(num, full) {
   return parts.join(' ');
 }
 
+/** Chuyển số tiền (VNĐ) sang chuỗi chữ, ví dụ "Một triệu đồng" */
 function numberToVietnameseWords(amount) {
   const n = Math.round(Number(amount) || 0);
   if (n === 0) return 'Không đồng';

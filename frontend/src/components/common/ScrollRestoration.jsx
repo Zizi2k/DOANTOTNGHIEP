@@ -1,3 +1,4 @@
+{/* ScrollRestoration.jsx — Lưu/khôi phục scroll theo route (back/forward) */}
 import { useEffect, useRef } from 'react';
 import { useLocation, useNavigationType } from 'react-router-dom';
 import { getScrollY, restoreScrollY } from '../../utils/scrollPreserve';
@@ -9,7 +10,7 @@ function scrollKey(pathname, search = '') {
 }
 
 /**
- * Remember scroll per route; restore on back/forward and when revisiting a page.
+ * Ghi nhớ vị trí scroll từng route; khôi phục khi POP (nút back trình duyệt).
  */
 export default function ScrollRestoration() {
   const location = useLocation();

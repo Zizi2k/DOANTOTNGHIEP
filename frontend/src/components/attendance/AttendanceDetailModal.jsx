@@ -1,3 +1,4 @@
+{/* AttendanceDetailModal.jsx — Modal chi tiết một buổi điểm danh và danh sách học viên */}
 import { Modal } from 'react-bootstrap';
 import { getAttendanceStatusLabel } from '../../constants/attendanceStatus';
 
@@ -6,6 +7,7 @@ function formatSessionDate(value) {
   return new Date(value).toLocaleDateString('vi-VN');
 }
 
+/** props: show, onHide, detail — dữ liệu buổi từ API */
 export default function AttendanceDetailModal({ show, onHide, detail }) {
   return (
     <Modal

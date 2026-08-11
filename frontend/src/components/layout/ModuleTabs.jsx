@@ -1,9 +1,12 @@
+{/* ModuleTabs.jsx — Tab chuyển module; nhớ scroll riêng từng tab */}
 import { useRef } from 'react';
 import { Nav, Tab } from 'react-bootstrap';
 
+/** props: activeKey, onSelect, tabs [{key, label, icon}], children (Tab.Pane) */
 export default function ModuleTabs({ activeKey, onSelect, tabs, children }) {
   const scrollByTab = useRef({});
 
+  /** Lưu scroll tab cũ trước khi chuyển tab */
   const handleSelect = (key) => {
     if (!key || key === activeKey) return;
 

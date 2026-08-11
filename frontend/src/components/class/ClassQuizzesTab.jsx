@@ -1,3 +1,4 @@
+{/* ClassQuizzesTab.jsx — Tab trắc nghiệm: tạo, import DOCX, chấm điểm */}
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -41,6 +42,7 @@ const emptyForm = {
   attachments: emptyAttachmentDraft(),
 };
 
+/** Tab quiz trong lớp — props: classId, canManage, isStudent */
 export default function ClassQuizzesTab({
   classId, quizzes, isTeacher, isStudent, onUpdated,
 }) {

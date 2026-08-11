@@ -1,3 +1,4 @@
+{/* StudentWorkSubmission.jsx — Form học viên nộp bài tập hoặc file quiz */}
 import { useState } from 'react';
 import { Form, Button, InputGroup, Spinner, Badge, Alert } from 'react-bootstrap';
 import {
@@ -9,6 +10,7 @@ import AttachmentList from '../common/AttachmentList';
 import LocalFilePreview from '../common/LocalFilePreview';
 import { API_BASE } from '../../config/apiBase';
 
+/** UI nộp link/file bài tập hoặc quiz */
 export default function StudentWorkSubmission({
   itemId,
   submitting,

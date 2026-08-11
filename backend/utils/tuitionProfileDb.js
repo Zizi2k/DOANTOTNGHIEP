@@ -1,5 +1,10 @@
+/**
+ * Truy vấn và ghi hồ sơ học phí (tuition_profiles).
+ * Cung cấp câu SELECT chuẩn và hàm insert kèm tính học phí sau giảm.
+ */
 const { parseAmount, resolveTuitionAmounts } = require('./tuitionHelpers');
 
+/** Câu SELECT hồ sơ học phí kèm khóa học, giảm giá, lớp liên kết */
 const PROFILE_SELECT = `
   SELECT tp.*,
     tc.name AS course_name,
@@ -13,6 +18,7 @@ const PROFILE_SELECT = `
   LEFT JOIN classes c ON tp.class_id = c.id
 `;
 
+/** Tạo hồ sơ học phí mới, tự tính fee_before/fee_after từ discount */
 async function insertTuitionProfile(conn, {
   studentCode, userId, fullname, subject, classId, classLabel,
   phone, zalo, tuition, courseId, startDate, endDate,

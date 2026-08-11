@@ -1,3 +1,7 @@
+/**
+ * Xuất báo cáo điểm danh tháng ra PDF.
+ * Gồm tổng hợp theo buổi và chi tiết theo học viên.
+ */
 const pdfmake = require('pdfmake');
 const vfs = require('pdfmake/build/vfs_fonts.js');
 
@@ -32,6 +36,7 @@ function formatMonthYear(month) {
   return `Tháng ${parseInt(mon, 10)}/${year}`;
 }
 
+/** Tạo buffer PDF điểm danh tháng (tự chọn portrait/landscape theo số buổi) */
 function buildMonthlyPdf({ classInfo, month, sessions, students, recordsByStudentDate }) {
   const sessionDates = sessions.map((s) => s.session_date).sort();
   const dateHeaders = sessionDates.map((d) => ({

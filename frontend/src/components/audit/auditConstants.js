@@ -1,3 +1,4 @@
+// Hằng số lọc và nhãn cho trang nhật ký audit
 export const ACTION_OPTIONS = [
   { value: '', label: 'Tất cả thao tác' },
   { value: 'create', label: 'Tạo mới' },
@@ -30,6 +31,7 @@ export const REQUEST_STATUS = {
   cancelled: { label: 'Đã hủy', bg: 'secondary' },
 };
 
+/** Định dạng ngày giờ hiển thị trên trang audit */
 export function formatDateTime(value) {
   if (!value) return '—';
   const d = new Date(value);

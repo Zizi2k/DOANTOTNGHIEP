@@ -1,3 +1,7 @@
+/**
+ * Xuất bảng điểm lớp ra file Excel (ExcelJS).
+ * Màu theo trạng thái: chưa nộp, chờ chấm, đã chấm, không áp dụng.
+ */
 const ExcelJS = require('exceljs');
 
 const HEADER_FILL = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E79' } };
@@ -28,6 +32,7 @@ function applyCellStyle(cell, opts = {}) {
   cell.border = thinBorder();
 }
 
+/** Tạo workbook Excel từ báo cáo điểm (buildClassGradeReport) */
 async function buildGradeWorkbook(report) {
   const wb = new ExcelJS.Workbook();
   wb.creator = 'LHG E-Learning';
@@ -156,6 +161,7 @@ async function buildGradeWorkbook(report) {
   return wb;
 }
 
+/** Xuất buffer .xlsx từ báo cáo điểm */
 async function exportGradeExcelBuffer(report) {
   const wb = await buildGradeWorkbook(report);
   return wb.xlsx.writeBuffer();

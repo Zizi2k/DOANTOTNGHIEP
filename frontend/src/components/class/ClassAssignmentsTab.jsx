@@ -1,3 +1,4 @@
+{/* ClassAssignmentsTab.jsx — Tab bài tập: tạo, chấm, phân quyền học viên */}
 import { useState } from 'react';
 import {
   Button, Card, Modal, Form, Alert, Badge, Spinner, Table,
@@ -26,6 +27,7 @@ const emptyForm = {
   attachments: emptyAttachmentDraft(),
 };
 
+/** Tab bài tập — props: classId, canManage, isStudent */
 export default function ClassAssignmentsTab({
   classId, assignments, isTeacher, isStudent, onUpdated,
 }) {

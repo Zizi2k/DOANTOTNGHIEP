@@ -1,3 +1,4 @@
+{/* ClassesPage.jsx — Danh sách lớp học, lọc và tạo lớp mới */}
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { Row, Col, Button, Modal, Form, Spinner, Alert, InputGroup, ButtonGroup } from 'react-bootstrap';
 import { classService } from '../services';
@@ -21,6 +22,7 @@ const PREFIX_OPTIONS = [
   { value: 'EG', label: 'EGC (EG)' },
 ];
 
+/** Quản lý lớp: grid ClassCard, modal tạo/sửa */
 export default function ClassesPage() {
   const { user } = useAuth();
   const [classes, setClasses] = useState([]);

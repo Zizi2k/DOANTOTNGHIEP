@@ -1,3 +1,7 @@
+/*
+ * notificationRoutes.js — Route thông báo trong app: danh sách, đếm chưa đọc, đánh dấu đã đọc.
+ * Prefix mount: /api/notifications
+ */
 const express = require('express');
 const { authenticate } = require('../middleware/auth');
 const {

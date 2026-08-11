@@ -1,5 +1,10 @@
+/**
+ * Nhận diện và quản lý tài khoản học viên.
+ * Xử lý đăng nhập theo mã HV, liên kết khi ghi danh, gộp trùng lặp theo SĐT.
+ */
 const { slugifyFullname, buildStudentUsername, extractStudentNumber, ensureUniqueUsername } = require('./username');
 
+/** Lấy danh sách mã học viên gắn với user (từ hồ sơ học phí hoặc users.code) */
 async function findStudentCodesForUser(conn, userId) {
   const [rows] = await conn.query(
     `SELECT tp.student_code, tp.subject, tp.class_label
@@ -17,6 +22,7 @@ async function findStudentCodesForUser(conn, userId) {
   return [];
 }
 
+/** Tìm user học viên khi đăng nhập bằng username + mã HV */
 async function findUserForStudentLogin(pool, username, code) {
   const normalizedCode = String(code || '').trim().toUpperCase();
   const [rows] = await pool.query(
@@ -33,6 +39,7 @@ async function findUserForStudentLogin(pool, username, code) {
   return rows[0] || null;
 }
 
+/** Tra user_id từ mã học viên (ưu tiên tuition_profiles, fallback users.code) */
 async function findUserIdByStudentCode(conn, studentCode) {
   const normalized = String(studentCode || '').trim().toUpperCase();
   if (!normalized) return null;
@@ -50,6 +57,7 @@ async function findUserIdByStudentCode(conn, studentCode) {
   return userRows[0]?.id || null;
 }
 
+/** Chọn học viên khớp tên chính xác trong danh sách trùng SĐT */
 function pickStudentByName(rows, fullname) {
   if (rows.length === 0) return null;
   const normalizedName = String(fullname || '').trim().toLowerCase();
@@ -58,6 +66,7 @@ function pickStudentByName(rows, fullname) {
   return exact || null;
 }
 
+/** Tìm học viên đã tồn tại theo SĐT và khớp họ tên */
 async function findExistingStudentByPhone(conn, phone, fullname) {
   const trimmedPhone = String(phone || '').trim();
   if (!trimmedPhone) return null;
@@ -74,6 +83,7 @@ async function findExistingStudentByPhone(conn, phone, fullname) {
   return pickStudentByName(rows, fullname);
 }
 
+/** Tạo tài khoản học viên mới với username tự sinh */
 async function createStudentUser(conn, { fullname, studentCode, phone, zalo }) {
   const studentNumber = extractStudentNumber(studentCode, null, 1);
   const baseUsername = buildStudentUsername(fullname, studentNumber);
@@ -88,6 +98,10 @@ async function createStudentUser(conn, { fullname, studentCode, phone, zalo }) {
   return inserted.insertId;
 }
 
+/**
+ * Xác định hoặc tạo user học viên khi ghi danh.
+ * Ưu tiên: mã HV → linkUserId → trùng SĐT → tạo mới.
+ */
 async function resolveStudentUserForEnrollment(conn, {
   studentCode,
   fullname,
@@ -161,6 +175,7 @@ async function resolveStudentUserForEnrollment(conn, {
   };
 }
 
+/** Gộp dữ liệu từ user bị xóa sang user giữ lại (lớp, học phí, bài nộp, thảo luận...) */
 async function mergeStudentUsers(conn, keepId, removeId) {
   if (Number(keepId) === Number(removeId)) return;
 
@@ -196,6 +211,7 @@ async function mergeStudentUsers(conn, keepId, removeId) {
   await conn.query('DELETE FROM users WHERE id = ?', [removeId]);
 }
 
+/** Đồng bộ SĐT từ hồ sơ học phí sang users nếu user chưa có SĐT */
 async function syncStudentPhonesFromProfiles(pool) {
   await pool.query(
     `UPDATE users u
@@ -211,6 +227,7 @@ async function syncStudentPhonesFromProfiles(pool) {
   );
 }
 
+/** Gom nhóm user trùng SĐT + tên thành Map key → Set id */
 function collectDuplicateGroups(rows) {
   const groups = new Map();
   for (const row of rows) {
@@ -229,6 +246,7 @@ function collectDuplicateGroups(rows) {
   return groups;
 }
 
+/** Gộp từng nhóm trùng lặp, giữ user có id nhỏ nhất */
 async function mergeDuplicateStudentGroups(pool, groups) {
   let mergedCount = 0;
   for (const idsSet of groups.values()) {
@@ -253,6 +271,7 @@ async function mergeDuplicateStudentGroups(pool, groups) {
   return mergedCount;
 }
 
+/** Tự động gộp học viên trùng SĐT + họ tên (từ users và tuition_profiles) */
 async function mergeDuplicateStudentsByPhone(pool) {
   await syncStudentPhonesFromProfiles(pool);
 

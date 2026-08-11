@@ -1,3 +1,7 @@
+/**
+ * Phạm vi quản trị theo chi nhánh HG/EG.
+ * Admin super (toàn hệ thống) vs admin/giáo viên có scope giới hạn theo tiền tố mã HV.
+ */
 function getUserScope(user) {
   if (!user) return null;
   if (user.role !== 'admin' && user.role !== 'teacher') return null;
@@ -19,10 +23,12 @@ function getAdminScope(user) {
   return getUserScope(user);
 }
 
+/** Admin không bị giới hạn chi nhánh */
 function isSuperAdmin(user) {
   return user?.role === 'admin' && getUserScope(user) === null;
 }
 
+/** Admin có phạm vi HG hoặc EG */
 function isScopedAdmin(user) {
   return user?.role === 'admin' && getUserScope(user) !== null;
 }
@@ -31,17 +37,20 @@ function isScopedUser(user) {
   return getUserScope(user) !== null;
 }
 
+/** Kiểm tra mã HV có thuộc chi nhánh scope (HG/EG) */
 function studentCodeMatchesScope(studentCode, scope) {
   if (!scope) return true;
   return String(studentCode || '').trim().toUpperCase().startsWith(scope);
 }
 
+/** Ưu tiên scope user, fallback prefix từ request */
 function resolveCodePrefixFilter(user, requestedPrefix) {
   const scope = getUserScope(user);
   if (scope) return scope;
   return requestedPrefix?.trim()?.toUpperCase() || '';
 }
 
+/** Mệnh đề SQL lọc student_code theo scope user */
 function appendStudentCodeScopeSql(user, columnSql = 'tp.student_code') {
   const scope = getUserScope(user);
   if (!scope) return { sql: '', params: [] };
@@ -51,6 +60,7 @@ function appendStudentCodeScopeSql(user, columnSql = 'tp.student_code') {
   };
 }
 
+/** Mệnh đề SQL lọc users.code theo scope (chỉ áp dụng role student) */
 function appendUserCodeScopeSql(user, userAlias = 'u') {
   const scope = getUserScope(user);
   if (!scope) return { sql: '', params: [] };
@@ -60,6 +70,10 @@ function appendUserCodeScopeSql(user, userAlias = 'u') {
   };
 }
 
+/**
+ * Mệnh đề SQL lọc lớp theo scope chi nhánh.
+ * Lớp rỗng hoặc có ít nhất một HV thuộc scope đều được hiển thị.
+ */
 function classScopeWhereSql(scope, classIdColumn = 'c.id') {
   if (!scope) return { sql: '', params: [] };
   const pattern = `${scope}%`;
@@ -97,6 +111,7 @@ function filterMembersByScope(user, members) {
   );
 }
 
+/** Ném lỗi 403 nếu mã HV ngoài phạm vi scope của user */
 function assertStudentCodeInScope(user, studentCode) {
   const scope = getUserScope(user);
   if (scope && !studentCodeMatchesScope(studentCode, scope)) {

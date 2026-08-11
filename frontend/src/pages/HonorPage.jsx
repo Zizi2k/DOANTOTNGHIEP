@@ -1,3 +1,4 @@
+{/* HonorPage.jsx — Bảng vinh danh học viên xuất sắc theo lớp */}
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Spinner, Alert, Form, Row, Col } from 'react-bootstrap';
@@ -8,6 +9,7 @@ import HonorStudentFrame from '../components/honor/HonorStudentFrame';
 import UserAvatar from '../components/UserAvatar';
 import { profilePath } from '../utils/profilePath';
 
+/** Lọc lớp và hiển thị HonorStudentFrame */
 export default function HonorPage() {
   const [classes, setClasses] = useState([]);
   const [selectedClassId, setSelectedClassId] = useState('');

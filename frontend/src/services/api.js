@@ -1,3 +1,4 @@
+// Instance Axios dùng chung — gắn token, xử lý FormData và kiểm tra phiên khi 401
 import axios from 'axios';
 import { API_URL } from '../config/apiBase';
 
@@ -8,6 +9,7 @@ const api = axios.create({
 let sessionCheckTimer = null;
 let sessionCheckInFlight = false;
 
+/** Phát sự kiện kiểm tra phiên (debounce) khi API trả 401 */
 export function dispatchSessionCheck() {
   if (sessionCheckInFlight) return;
   if (sessionCheckTimer) clearTimeout(sessionCheckTimer);
@@ -16,6 +18,7 @@ export function dispatchSessionCheck() {
   }, 400);
 }
 
+// Mỗi request: gắn Bearer token; FormData thì bỏ Content-Type để browser tự set boundary
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -36,6 +39,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Response lỗi 401 (trừ login/register): kích hoạt kiểm tra phiên thay vì logout ngay
 api.interceptors.response.use(
   (res) => res,
   (error) => {

@@ -1,3 +1,7 @@
+/*
+ * migrate-online-sessions.js — Script một lần tạo bảng online_sessions (phiên học trực tuyến).
+ * Chạy: node scripts/migrate-online-sessions.js
+ */
 require('dotenv').config();
 const pool = require('../config/db');
 

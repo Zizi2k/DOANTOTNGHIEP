@@ -1,3 +1,5 @@
+{/* ModuleSection.jsx — Khối nội dung có header (tiêu đề, badge đếm, actions) */}
+/** props: title, icon, count, actions, children, className, flush, style */
 export default function ModuleSection({
   title,
   icon,

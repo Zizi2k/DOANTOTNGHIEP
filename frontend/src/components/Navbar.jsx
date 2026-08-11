@@ -1,3 +1,4 @@
+{/* Navbar.jsx — Thanh điều hướng đơn giản (layout cũ / thay thế) */}
 import { useState } from 'react';
 import { Container, Navbar as BSNavbar, Nav, Dropdown } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
@@ -7,6 +8,7 @@ import ProfileModal from './ProfileModal';
 
 const roleLabels = { admin: 'Quản trị viên', teacher: 'Giáo viên', student: 'Học sinh' };
 
+/** Navbar Bootstrap với menu user và đăng xuất */
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();

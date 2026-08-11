@@ -1,3 +1,4 @@
+{/* PromoCoursesPage.jsx — Khóa học quảng bá, banner và đăng ký thử */}
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -188,6 +189,7 @@ function PromoCardPrice({ course }) {
   );
 }
 
+/** Carousel banner, danh sách khóa, đăng ký/join — admin quản lý nội dung */
 export default function PromoCoursesPage() {
   const { user } = useAuth();
   const navigate = useNavigate();

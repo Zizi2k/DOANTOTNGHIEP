@@ -1,6 +1,11 @@
+/**
+ * Quản lý tệp đính kèm bài nộp (assignment/quiz).
+ * Hỗ trợ nhiều file, fallback cột legacy file_url, và migration dữ liệu cũ.
+ */
 const pool = require('../config/db');
 const { syncLegacyColumns } = require('./contentAttachments');
 
+/** Lấy map submission_id → danh sách đính kèm theo loại bài nộp */
 async function fetchSubmissionAttachmentsMap(submissionType, submissionIds) {
   if (!submissionIds.length) return new Map();
   const placeholders = submissionIds.map(() => '?').join(',');
@@ -32,6 +37,7 @@ async function fetchSubmissionAttachmentsMap(submissionType, submissionIds) {
   return map;
 }
 
+/** Chuyển cột file_url cũ thành mảng đính kèm (tương thích ngược) */
 function legacyAttachmentsFromRow(row, urlField = 'file_url') {
   const fileUrl = row[urlField] ?? row.file_url;
   if (!fileUrl) return [];
@@ -43,6 +49,7 @@ function legacyAttachmentsFromRow(row, urlField = 'file_url') {
   }];
 }
 
+/** Gắn danh sách đính kèm vào từng dòng kết quả truy vấn */
 function attachSubmissionAttachmentsToRows(rows, submissionType, attachmentMap) {
   return rows.map((row) => {
     const fromTable = attachmentMap.get(row.id) || [];
@@ -53,6 +60,7 @@ function attachSubmissionAttachmentsToRows(rows, submissionType, attachmentMap) 
   });
 }
 
+/** Gắn đính kèm bài nộp (tự truy vấn DB) */
 async function attachSubmissionAttachmentsToRowsAsync(rows, submissionType) {
   if (!rows.length) return rows;
   const map = await fetchSubmissionAttachmentsMap(
@@ -62,6 +70,7 @@ async function attachSubmissionAttachmentsToRowsAsync(rows, submissionType) {
   return attachSubmissionAttachmentsToRows(rows, submissionType, map);
 }
 
+/** Bổ sung submission_attachments cho các dòng có submission_id riêng */
 async function enrichRowsWithSubmissionAttachments(
   rows,
   submissionType,
@@ -87,6 +96,7 @@ async function enrichRowsWithSubmissionAttachments(
   });
 }
 
+/** Thay thế toàn bộ đính kèm của một bài nộp */
 async function replaceSubmissionAttachments(conn, submissionType, submissionId, attachments) {
   await conn.query(
     'DELETE FROM submission_attachments WHERE submission_type = ? AND submission_id = ?',
@@ -110,6 +120,7 @@ async function replaceSubmissionAttachments(conn, submissionType, submissionId, 
   }
 }
 
+/** Xóa bài nộp kèm tất cả đính kèm */
 async function deleteSubmissionWithAttachments(conn, submissionType, submissionId) {
   await conn.query(
     'DELETE FROM submission_attachments WHERE submission_type = ? AND submission_id = ?',
@@ -120,6 +131,7 @@ async function deleteSubmissionWithAttachments(conn, submissionType, submissionI
   return result.affectedRows > 0;
 }
 
+/** Migration: chuyển file_url cũ sang bảng submission_attachments (chạy một lần) */
 async function migrateLegacySubmissionAttachments() {
   const [[flag]] = await pool.query(
     "SELECT meta_value FROM app_meta WHERE meta_key = 'submission_attachments_migrated_v1'",

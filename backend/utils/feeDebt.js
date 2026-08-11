@@ -1,3 +1,7 @@
+/**
+ * Quản lý hồ sơ nợ học phí (fee_debt_records).
+ * Ghi nhận nợ khi học viên nghỉ luôn hoặc bị xóa, hỗ trợ xóa sạch dữ liệu sau thu nợ.
+ */
 const pool = require('../config/db');
 const { computeDebt } = require('./tuitionHelpers');
 const { PROFILE_SELECT } = require('./tuitionProfileDb');
@@ -9,6 +13,7 @@ const SUBJECT_LABELS = {
   vietnamese: 'Tiếng Việt',
 };
 
+/** Lấy các hồ sơ học phí của user còn nợ */
 async function getProfilesWithDebtForUser(conn, userId) {
   const [profiles] = await conn.query(
     `${PROFILE_SELECT} WHERE tp.user_id = ?`,
@@ -29,6 +34,7 @@ async function getProfilesWithDebtForUser(conn, userId) {
   return withDebt;
 }
 
+/** Tạo hoặc cập nhật bản ghi nợ phí theo student_code + profile */
 async function upsertFeeDebtRecord(conn, {
   userId,
   profile,
@@ -88,6 +94,7 @@ async function upsertFeeDebtRecord(conn, {
   return result.insertId;
 }
 
+/** Ghi nợ phí cho học viên bị đánh dấu nghỉ luôn tại buổi điểm danh */
 async function syncFeeDebtForDroppedStudents(conn, {
   classId, className, studentIds, actorId,
 }) {
@@ -134,6 +141,7 @@ async function syncFeeDebtForDroppedStudents(conn, {
   return created;
 }
 
+/** Lưu snapshot nợ phí trước khi xóa user học viên */
 async function snapshotFeeDebtBeforeUserDelete(conn, userId, actorId) {
   const [userRows] = await conn.query(
     'SELECT id, fullname, code, phone, zalo FROM users WHERE id = ?',
@@ -178,6 +186,7 @@ async function snapshotFeeDebtBeforeUserDelete(conn, userId, actorId) {
   return ids;
 }
 
+/** Xóa toàn bộ dữ liệu học viên sau khi đã thu hết nợ */
 async function purgeStudentDataByDebtRecord(conn, record) {
   const studentCode = record.student_code;
   const userId = record.user_id;

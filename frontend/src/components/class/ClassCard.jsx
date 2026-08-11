@@ -1,8 +1,10 @@
+{/* ClassCard.jsx — Thẻ hiển thị lớp học trên grid danh sách */}
 import { Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { getAvatarUrl, getInitials } from '../../utils/avatar';
 import ShrinkFitText from '../common/ShrinkFitText';
 
+/** Ô media (avatar/ảnh bìa) trên thẻ lớp */
 export function ClassMediaTile({
   variant, src, alt, initials, label, icon, className = '',
 }) {
@@ -28,6 +30,7 @@ export function ClassMediaTile({
   );
 }
 
+/** props: cls, canManage, onEdit, onDelete */
 export default function ClassCard({ cls, canManage, onEdit, onDelete }) {
   const teacherName = cls.teacher_names?.split(',')[0]?.trim() || 'Giáo viên';
   const teacherInitials = getInitials(teacherName);

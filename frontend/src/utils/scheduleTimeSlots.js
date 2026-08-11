@@ -1,3 +1,4 @@
+// Khung giờ học và tiện ích lịch tháng cho TeacherSchedulePanel
 export const TIME_SLOTS = [
   { start: '07:00:00', end: '09:00:00', label: '7:00 – 9:00' },
   { start: '09:00:00', end: '11:00:00', label: '9:00 – 11:00' },
@@ -6,6 +7,7 @@ export const TIME_SLOTS = [
   { start: '16:45:00', end: '18:45:00', label: '16:45 – 18:45' },
 ];
 
+/** Chuỗi YYYY-MM cho tháng hiện tại */
 export function currentMonthValue() {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -28,6 +30,7 @@ export function slotStateKey(slotDate, startTime) {
 
 const WEEKDAY_HEADERS = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
 
+/** Ma trận tuần × ngày phục vụ lịch tháng */
 export function getCalendarWeeks(month) {
   if (!/^\d{4}-\d{2}$/.test(month || '')) return [];
   const [year, mon] = month.split('-').map(Number);

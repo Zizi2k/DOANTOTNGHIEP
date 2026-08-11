@@ -1,7 +1,9 @@
+{/* TuitionProfileTable.jsx — Bảng hồ sơ học phí với nút sửa/thanh toán/biên lai */}
 import { Badge, Button } from 'react-bootstrap';
 import DataTable, { DataTableEmpty } from '../common/DataTable';
 import { formatMoney, STATUS_LABELS, subjectLabel } from './tuitionConstants';
 
+/** props: profiles, discounts, onEdit, onPay, onReceipts */
 export default function TuitionProfileTable({
   profiles, onEdit, onPay, onDelete, onViewReceipts,
 }) {

@@ -1,5 +1,7 @@
+{/* LoadingOverlay.jsx — Lớp spinner phủ lên nội dung khi loading */}
 import { Spinner } from 'react-bootstrap';
 
+/** props: loading, children, className, minHeight */
 export default function LoadingOverlay({
   loading,
   children,

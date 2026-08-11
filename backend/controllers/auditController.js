@@ -1,7 +1,14 @@
+/**
+ * Controller nhật ký kiểm toán (Audit)
+ * Xem log hành động và duyệt/từ chối yêu cầu xóa dữ liệu nhạy cảm.
+ */
 const pool = require('../config/db');
 const { logAction, labelForAction, labelForResource } = require('../utils/auditLog');
 const { executeDeletion } = require('../utils/deletionPolicy');
 
+/**
+ * GET /audit/logs — Danh sách nhật ký. Query: actor_id, action, resource_type, search, actor_role, limit, offset.
+ */
 const getAuditLogs = async (req, res) => {
   try {
     const {
@@ -53,6 +60,7 @@ const getAuditLogs = async (req, res) => {
   }
 };
 
+/** GET /audit/deletion-requests — Yêu cầu xóa. Query: status (mặc định pending). */
 const getDeletionRequests = async (req, res) => {
   try {
     const { status = 'pending' } = req.query;
@@ -87,6 +95,7 @@ const getDeletionRequests = async (req, res) => {
   }
 };
 
+/** GET /audit/deletion-requests/pending-count — Số yêu cầu xóa đang chờ duyệt. */
 const getPendingCount = async (_req, res) => {
   try {
     const [rows] = await pool.query(
@@ -98,6 +107,10 @@ const getPendingCount = async (_req, res) => {
   }
 };
 
+/**
+ * POST /audit/deletion-requests/:id/approve — Duyệt và thực thi xóa theo chính sách deletionPolicy.
+ * Body: review_note (tùy chọn).
+ */
 const approveRequest = async (req, res) => {
   try {
     const { review_note } = req.body;
@@ -147,6 +160,7 @@ const approveRequest = async (req, res) => {
   }
 };
 
+/** POST /audit/deletion-requests/:id/reject — Từ chối yêu cầu xóa. Body: review_note. */
 const rejectRequest = async (req, res) => {
   try {
     const { review_note } = req.body;

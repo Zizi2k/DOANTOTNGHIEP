@@ -1,7 +1,12 @@
+/**
+ * Báo cáo điểm lớp học và tin nhắn nhắc nhở bài chưa hoàn thành.
+ * Tổng hợp điểm bài tập, bài kiểm tra và danh sách pending theo học viên.
+ */
 const { isVisibleToStudent } = require('./contentVisibility');
 const { SUBJECTS } = require('./tuitionHelpers');
 const { filterMembersByScope } = require('./adminScope');
 
+/** Kiểm tra bài được giao cho học viên (visible + access mode) */
 function isItemAssignedToStudent(item, studentId, allowedMap) {
   if (!isVisibleToStudent(item)) return false;
   const mode = item.student_access_mode || 'all';
@@ -10,6 +15,7 @@ function isItemAssignedToStudent(item, studentId, allowedMap) {
   return allowed ? allowed.has(Number(studentId)) : false;
 }
 
+/** Tạo nội dung tin nhắn nhắc nhở bài chưa nộp/làm */
 function buildReminderText(student, pendingItems, className) {
   if (!pendingItems.length) return '';
   const lines = pendingItems.map((item) => {
@@ -29,6 +35,7 @@ function buildReminderText(student, pendingItems, className) {
   ].join('\n');
 }
 
+/** Xây dựng báo cáo điểm đầy đủ cho một lớp */
 async function buildClassGradeReport(pool, classId, requestUser) {
   const [classRows] = await pool.query('SELECT id, name, subject FROM classes WHERE id = ?', [classId]);
   if (!classRows.length) return null;

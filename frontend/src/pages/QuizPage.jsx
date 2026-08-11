@@ -1,3 +1,4 @@
+{/* QuizPage.jsx — Làm bài trắc nghiệm hoặc xem kết quả (theo vai trò) */}
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Form, Button, Spinner, Alert, Badge } from 'react-bootstrap';
@@ -93,6 +94,7 @@ function ReviewList({ review }) {
   );
 }
 
+/** Route /quizzes/:id — timer, nộp bài, hiển thị điểm */
 export default function QuizPage() {
   const { id } = useParams();
   const navigate = useNavigate();

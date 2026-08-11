@@ -1,3 +1,6 @@
+// Kiểm tra loại file, icon và chế độ xem trước (PDF, video, Office, ảnh, link)
+
+/** MIME/accept cho học viên nộp bài */
 export const STUDENT_SUBMIT_FILE_ACCEPT =
   '.pdf,.docx,.xlsx,.xls,.ppt,.pptx,.pps,.ppsx,' +
   'application/pdf,' +
@@ -12,6 +15,7 @@ export const STUDENT_SUBMIT_EXTENSIONS = [
   '.pdf', '.docx', '.xlsx', '.xls', '.ppt', '.pptx', '.pps', '.ppsx',
 ];
 
+/** Kiểm tra phần mở rộng file nộp bài của học viên */
 export function isStudentSubmitFileAllowed(file) {
   if (!file) return false;
   const name = file.name.toLowerCase();
@@ -156,6 +160,7 @@ function inferPreviewKindFromUrlAndMime(fileUrl, mime) {
   return 'none';
 }
 
+/** Xác định loại preview: image, pdf, video, office, external, none */
 export function getContentPreviewKind(item) {
   if (!item?.file_url) return 'none';
 

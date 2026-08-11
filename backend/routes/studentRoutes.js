@@ -1,3 +1,7 @@
+/*
+ * studentRoutes.js — Route quản lý học viên: khóa đào tạo, ghi danh, chuyển lớp, gộp trùng.
+ * Prefix mount: /api/students
+ */
 const express = require('express');
 const { authenticate, authorize } = require('../middleware/auth');
 const {
@@ -12,7 +16,7 @@ const router = express.Router();
 
 router.use(authenticate);
 
-// Teachers need course list when adding students with tuition in a class
+// Giáo viên cần danh sách khóa khi thêm học viên kèm học phí
 router.get('/courses', authorize('admin', 'teacher'), getCourses);
 
 router.use(authorize('admin'));

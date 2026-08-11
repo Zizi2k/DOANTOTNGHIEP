@@ -1,3 +1,7 @@
+# import-railway-db.ps1 — Lưu thông tin kết nối Railway DB và import schema MySQL.
+# Tham số: DbHost, DbPort, DbUser, DbPassword, DbName (bắt buộc).
+# Ghi cấu hình vào backend/.env.railway rồi chạy import-schema.js --fresh.
+
 param(
   [Parameter(Mandatory = $true)][string]$DbHost,
   [Parameter(Mandatory = $true)][string]$DbPort,

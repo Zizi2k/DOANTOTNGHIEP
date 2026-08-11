@@ -1,6 +1,14 @@
+/**
+ * Hỗ trợ chia sẻ nội dung: sao chép file đính kèm trong DB.
+ * Tạo token mới trong file_assets khi file được lưu nội bộ.
+ */
 const crypto = require('crypto');
 const pool = require('../config/db');
 
+/**
+ * Nhân bản URL file: nếu là file nội bộ (/api/files/download/token)
+ * thì copy blob sang token mới; link ngoài giữ nguyên.
+ */
 async function duplicateFileUrl(fileUrl, fileType) {
   if (!fileUrl) {
     return { file_url: null, file_type: null };

@@ -1,3 +1,4 @@
+{/* StudentsPage.jsx — Quản lý khóa học và ghi danh học viên */}
 import { useEffect, useState } from 'react';
 import {
   Row, Col, Form, Button, Spinner, Badge,
@@ -22,6 +23,7 @@ import { preserveScrollDuring } from '../utils/scrollPreserve';
 
 const emptySummary = { total: 0, active: 0, expiring: 0, expired: 0 };
 
+/** CourseManager + EnrollmentOverviewTable + modal ghi danh/chuyển lớp */
 export default function StudentsPage() {
   const { user } = useAuth();
   const [students, setStudents] = useState([]);

@@ -1,3 +1,7 @@
+/*
+ * auditRoutes.js — Route kiểm toán và duyệt yêu cầu xóa dữ liệu (chỉ super admin).
+ * Prefix mount: /api/audit
+ */
 const express = require('express');
 const { authenticate, authorize, requireSuperAdmin } = require('../middleware/auth');
 const {

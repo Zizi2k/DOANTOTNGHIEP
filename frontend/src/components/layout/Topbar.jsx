@@ -1,3 +1,4 @@
+{/* Topbar.jsx — Thanh trên: toggle sidebar, thông báo, hồ sơ, đăng xuất */}
 import { useState, useEffect } from 'react';
 import { Dropdown, Badge } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
@@ -8,6 +9,7 @@ import UserAvatar from '../UserAvatar';
 import ProfileModal from '../ProfileModal';
 import NotificationBell from '../notifications/NotificationBell';
 
+/** props: onToggleSidebar, onToggleMobile */
 export default function Topbar({ onToggleSidebar, onToggleMobile }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -17,8 +19,8 @@ export default function Topbar({ onToggleSidebar, onToggleMobile }) {
   const isSuper = isSuperAdmin(user);
   const adminScope = getAdminScope(user);
 
+  // Admin tối cao: badge số yêu cầu xóa đang chờ duyệt
   useEffect(() => {
-    if (!isSuper) return undefined;
     const load = () => {
       auditService.getPendingCount()
         .then((res) => setPendingDeletes(res.data.count || 0))

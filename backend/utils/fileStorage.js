@@ -1,7 +1,12 @@
+/**
+ * Lưu trữ file upload (multer) vào DB hoặc thư mục uploads.
+ * Xác định MIME type từ extension và hỗ trợ upload đơn/đa file.
+ */
 const crypto = require('crypto');
 const path = require('path');
 const pool = require('../config/db');
 
+/** Suy MIME type từ extension hoặc mimetype của multer */
 function resolveStoredFileType(file) {
   const name = (file.originalname || '').toLowerCase();
   const ext = path.extname(name);
@@ -31,6 +36,7 @@ function resolveStoredFileType(file) {
   return (mime || 'application/octet-stream').slice(0, 127);
 }
 
+/** Lưu buffer file vào bảng file_assets, trả URL download nội bộ */
 async function persistUploadedFile(file) {
   if (!file?.buffer) {
     throw new Error('Không có dữ liệu tệp để lưu');
@@ -52,6 +58,7 @@ async function persistUploadedFile(file) {
   };
 }
 
+/** Lưu một file từ req (memory hoặc disk storage) */
 async function saveMulterFile(req) {
   if (!req.file) return null;
 
@@ -65,6 +72,7 @@ async function saveMulterFile(req) {
   };
 }
 
+/** Lấy danh sách file đã upload từ req (hỗ trợ nhiều cấu trúc multer) */
 function getUploadedFiles(req) {
   if (req.files?.files?.length) return req.files.files;
   if (req.files?.length) return req.files;
@@ -72,6 +80,7 @@ function getUploadedFiles(req) {
   return [];
 }
 
+/** Lưu tất cả file upload từ request */
 async function saveMulterFiles(req) {
   const files = getUploadedFiles(req);
   const saved = [];

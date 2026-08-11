@@ -1,3 +1,6 @@
+{/* StatCard.jsx — Thẻ thống kê số liệu trên dashboard và trang tổng quan */}
+
+/** props: icon, tone, label, value, hint — một chỉ số KPI */
 export function StatCard({ icon, tone = 'blue', label, value, hint }) {
   return (
     <div className="module-stat-card">
@@ -13,6 +16,7 @@ export function StatCard({ icon, tone = 'blue', label, value, hint }) {
   );
 }
 
+/** Lưới chứa nhiều StatCard */
 export function StatCardGrid({ children, className = '' }) {
   return (
     <div className={`module-stat-grid ${className}`.trim()}>

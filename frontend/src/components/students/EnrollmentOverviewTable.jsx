@@ -1,3 +1,4 @@
+{/* EnrollmentOverviewTable.jsx — Bảng tổng quan học viên và ghi danh */}
 import { Link } from 'react-router-dom';
 import { Badge, Button } from 'react-bootstrap';
 import DataTable, { DataTableEmpty } from '../common/DataTable';
@@ -5,6 +6,7 @@ import {
   ENROLLMENT_STATUS_LABELS, STATUS_LABELS, formatMoney, formatDateVi, subjectLabel,
 } from './studentConstants';
 
+/** props: students, onEdit, onTransfer */
 export default function EnrollmentOverviewTable({ students, onEdit, onTransfer }) {
   if (!students.length) {
     return (

@@ -1,3 +1,4 @@
+// Hằng số và helper ngày tháng cho module học viên/ghi danh
 import { SUBJECT_OPTIONS, STATUS_LABELS, formatMoney, subjectLabel } from '../tuition/tuitionConstants';
 
 export { SUBJECT_OPTIONS, STATUS_LABELS, formatMoney, subjectLabel };
@@ -15,6 +16,7 @@ export const ENROLLMENT_STATUS_LABELS = {
   unknown: { label: 'Chưa xác định', bg: 'light' },
 };
 
+/** Tính ngày kết thúc khóa từ ngày bắt đầu + số tháng */
 export function calcEndDate(startDate, durationMonths) {
   const monthsNum = parseInt(durationMonths, 10);
   if (!startDate || !Number.isFinite(monthsNum) || monthsNum < 1) return '';

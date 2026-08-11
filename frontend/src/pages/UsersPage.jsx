@@ -1,3 +1,4 @@
+{/* UsersPage.jsx — Quản lý tài khoản người dùng (admin) */}
 import { useEffect, useState } from 'react';
 import { Button, ButtonGroup, Modal, Form, Spinner, Badge, Alert, Row, Col } from 'react-bootstrap';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
@@ -67,6 +68,7 @@ function UserTableRow({ user, onEdit, onDelete, extraActions, canManage = true }
   );
 }
 
+/** CRUD user, upload avatar, phân vai trò và scope */
 export default function UsersPage() {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();

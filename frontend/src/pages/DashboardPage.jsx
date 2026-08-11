@@ -1,3 +1,4 @@
+{/* DashboardPage.jsx — Trang tổng quan: thống kê và lớp học gần đây */}
 import { useEffect, useState } from 'react';
 import { Spinner, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
@@ -14,6 +15,7 @@ const metricStyles = [
   { icon: 'star', tone: 'blue', label: 'Điểm trung bình' },
 ];
 
+/** Trang chủ sau đăng nhập — load stats theo vai trò */
 export default function DashboardPage() {
   const { user } = useAuth();
   const [stats, setStats] = useState(null);

@@ -1,3 +1,4 @@
+{/* ProfileModal.jsx — Modal chỉnh sửa hồ sơ (bản thân hoặc user được quản lý) */}
 import { useEffect, useState } from 'react';
 import { Modal, Form, Button, Alert } from 'react-bootstrap';
 import { authService, userService } from '../services';
@@ -9,6 +10,7 @@ const roleLabels = { admin: 'Quản trị viên', teacher: 'Giáo viên', studen
 /**
  * @param {object} [targetProfile] — khi admin/GV sửa học viên; bỏ trống = sửa chính mình
  */
+/** props: show, onHide, onSaved, targetProfile — null = sửa profile đang đăng nhập */
 export default function ProfileModal({ show, onHide, onSaved, targetProfile = null }) {
   const { user, updateUser } = useAuth();
   const isManagingOther = Boolean(targetProfile && Number(targetProfile.id) !== Number(user?.id));

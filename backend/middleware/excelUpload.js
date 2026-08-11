@@ -1,3 +1,7 @@
+/*
+ * excelUpload.js — Middleware upload file Excel/CSV để import dữ liệu hàng loạt.
+ * Lưu tạm vào thư mục uploads/temp, giới hạn 5MB.
+ */
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -14,6 +18,7 @@ const storage = multer.diskStorage({
   },
 });
 
+// Chỉ cho phép định dạng bảng tính phổ biến
 const fileFilter = (_req, file, cb) => {
   const ext = path.extname(file.originalname).toLowerCase();
   if (['.xlsx', '.xls', '.csv'].includes(ext)) {

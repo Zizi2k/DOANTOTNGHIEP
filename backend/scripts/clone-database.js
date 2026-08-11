@@ -1,5 +1,5 @@
-/**
- * Tạo database MySQL mới và copy toàn bộ bảng + dữ liệu từ DB cũ.
+/*
+ * clone-database.js — Tạo database MySQL mới và copy toàn bộ bảng + dữ liệu từ DB cũ.
  *
  * Cách dùng (trong thư mục backend):
  *   node scripts/clone-database.js --from elearning_db --to huynhgia_qlhv
@@ -17,6 +17,7 @@ const mysql = require('mysql2/promise');
 
 const args = process.argv.slice(2);
 
+// Đọc tham số dạng --key value từ dòng lệnh
 function getArg(name) {
   const i = args.indexOf(name);
   return i >= 0 ? args[i + 1] : undefined;
@@ -90,6 +91,7 @@ async function main() {
     console.warn(`Database "${fromDb}" không có bảng nào. Chỉ tạo DB trống "${toDb}".`);
   } else {
     console.log(`Copy ${tableNames.length} bảng: ${fromDb} → ${toDb}`);
+    // Tắt FK tạm thời để copy không bị chặn thứ tự bảng
     await rootConn.query('SET FOREIGN_KEY_CHECKS = 0');
 
     for (const table of tableNames) {

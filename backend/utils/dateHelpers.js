@@ -1,9 +1,14 @@
+/**
+ * Tiện ích xử lý ngày tháng.
+ * Định dạng ISO, cộng tháng, và trạng thái ghi danh.
+ */
 function formatDateOnly(date) {
   const d = date instanceof Date ? date : new Date(date);
   if (Number.isNaN(d.getTime())) return null;
   return d.toISOString().slice(0, 10);
 }
 
+/** Cộng số tháng vào ngày bắt đầu, xử lý ngày cuối tháng */
 function addMonthsToDate(startDate, months) {
   const monthsNum = parseInt(months, 10);
   if (!startDate || !Number.isFinite(monthsNum) || monthsNum < 1) return null;
@@ -20,6 +25,7 @@ function addMonthsToDate(startDate, months) {
   return formatDateOnly(result);
 }
 
+/** Xác định trạng thái ghi danh: đang học / sắp kết thúc / đã kết thúc */
 function getEnrollmentStatus(endDate) {
   if (!endDate) {
     return { key: 'unknown', label: 'Chưa xác định' };

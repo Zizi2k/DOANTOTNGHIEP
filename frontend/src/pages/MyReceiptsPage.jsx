@@ -1,3 +1,4 @@
+{/* MyReceiptsPage.jsx — Phiếu thu học phí của học viên đăng nhập */}
 import { useEffect, useState } from 'react';
 import { Button, Badge, Spinner } from 'react-bootstrap';
 import { Navigate } from 'react-router-dom';
@@ -8,6 +9,7 @@ import PageHeader from '../components/layout/PageHeader';
 import ModuleSection from '../components/layout/ModuleSection';
 import { openPaymentReceipt } from '../utils/tuitionReceipt';
 
+/** Chỉ role student — tải PDF biên lai */
 export default function MyReceiptsPage() {
   const { user } = useAuth();
   const [receipts, setReceipts] = useState([]);

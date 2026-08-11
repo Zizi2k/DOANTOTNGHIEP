@@ -1,3 +1,7 @@
+/**
+ * Xử lý input bài nộp của học viên.
+ * Hỗ trợ upload file, link URL, và giới hạn loại/ số lượng tệp.
+ */
 const path = require('path');
 const { saveMulterFiles, getUploadedFiles } = require('./fileStorage');
 const { parseLinksFromBody } = require('./contentAttachments');
@@ -7,6 +11,7 @@ const ALLOWED_EXTENSIONS = [
 ];
 const MAX_SUBMISSION_FILES = 30;
 
+/** Kiểm tra URL hợp lệ (http/https) */
 function isValidSubmissionUrl(url) {
   try {
     const parsed = new URL(url);
@@ -25,6 +30,7 @@ function validateStudentFileExtension(file) {
   }
 }
 
+/** Thu thập và validate tất cả đính kèm từ request (file + link) */
 async function resolveStudentSubmissionAttachments(req) {
   const uploaded = getUploadedFiles(req);
   const files = uploaded.length ? uploaded : (req.file ? [req.file] : []);
@@ -75,11 +81,13 @@ async function resolveStudentSubmissionAttachments(req) {
   return all;
 }
 
+/** Trả về file_url chính (phần tử đầu) và toàn bộ đính kèm */
 async function resolveStudentSubmissionInput(req) {
   const attachments = await resolveStudentSubmissionAttachments(req);
   return { file_url: attachments[0].file_url, attachments };
 }
 
+/** Kiểm tra URL bài nộp là link ngoài (không phải file upload) */
 function isExternalSubmissionUrl(fileUrl) {
   return /^https?:\/\//i.test(fileUrl || '');
 }

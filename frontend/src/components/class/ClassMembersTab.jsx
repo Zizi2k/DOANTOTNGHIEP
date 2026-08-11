@@ -1,3 +1,4 @@
+{/* ClassMembersTab.jsx — Tab thành viên: học viên, GV, import Excel */}
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Modal, Form, Button, Alert, Spinner, InputGroup, ListGroup, Badge,
@@ -15,6 +16,7 @@ import ProfileNameLink from '../profile/ProfileNameLink';
 
 const emptyForm = { ...emptyStudentFields, ...emptyTuitionFields };
 
+/** Tab thành viên lớp — props: classId, canManage, members, onChanged */
 export default function ClassMembersTab({
   classId, className, classCode, members, isTeacher, isAdmin, isStudent, onUpdated,
 }) {

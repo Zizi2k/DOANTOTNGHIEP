@@ -1,3 +1,7 @@
+/**
+ * Import câu hỏi trắc nghiệm từ file Word (.docx).
+ * Nhận dạng định dạng Câu N / A-D, tự phát hiện đáp án đúng qua highlight vàng.
+ */
 const JSZip = require('jszip');
 const { XMLParser } = require('fast-xml-parser');
 
@@ -24,6 +28,7 @@ function getAttr(node, name) {
   return node[`@_${name}`] || node[`@_${short}`] || '';
 }
 
+/** Kiểm tra run Word có màu nền/highlight vàng (đáp án đúng) */
 function isYellowRunProperties(rPr) {
   if (!rPr || typeof rPr !== 'object') return false;
 
@@ -80,6 +85,7 @@ function paragraphToLine(runs) {
   return { text, highlighted };
 }
 
+/** Đọc từng dòng văn bản từ document.xml của docx */
 async function extractParagraphLines(buffer) {
   const zip = await JSZip.loadAsync(buffer);
   const docXml = zip.file('word/document.xml');
@@ -112,6 +118,7 @@ async function extractParagraphLines(buffer) {
   return lines;
 }
 
+/** Hoàn thiện object câu hỏi: validate đủ 4 đáp án và xác định answer */
 function finalizeQuestion(question) {
   const options = ['A', 'B', 'C', 'D'];
   const filled = options.filter((letter) => question[`option${letter}`]?.trim());
@@ -134,6 +141,7 @@ function finalizeQuestion(question) {
   };
 }
 
+/** Parse danh sách dòng thành mảng câu hỏi trắc nghiệm */
 function parseQuizLines(lines) {
   const questions = [];
   let current = null;
@@ -196,6 +204,7 @@ function parseQuizLines(lines) {
   return questions;
 }
 
+/** Parse file docx buffer thành danh sách câu hỏi */
 async function parseQuizDocx(buffer) {
   if (!buffer?.length) {
     throw new Error('File trống hoặc không hợp lệ');
@@ -230,6 +239,7 @@ function docxOptionLine(letter, text, highlight = false) {
   return docxParagraph(`${letter}. ${text}`, { highlight });
 }
 
+/** Tạo file docx mẫu hướng dẫn định dạng import trắc nghiệm */
 async function generateQuizSampleDocx() {
   const bodyParts = [
     docxParagraph('HƯỚNG DẪN ĐỊNH DẠNG FILE TRẮC NGHIỆM', { bold: true }),

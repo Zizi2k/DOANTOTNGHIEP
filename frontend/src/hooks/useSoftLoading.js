@@ -1,7 +1,9 @@
+// Hook phân biệt lần tải đầu (spinner) và tải lại (overlay) để giữ vị trí scroll
 import { useRef } from 'react';
 
 /**
- * Distinguish first load (placeholder) vs reload (overlay) so scroll position is preserved.
+ * @param {boolean} isLoading — đang gọi API / tải dữ liệu
+ * @returns {{ showInitialSpinner, showOverlay }} — kiểu hiển thị loading phù hợp
  */
 export function useSoftLoading(isLoading) {
   const hasLoadedOnce = useRef(false);

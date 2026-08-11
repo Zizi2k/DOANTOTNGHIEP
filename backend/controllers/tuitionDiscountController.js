@@ -1,6 +1,11 @@
+/**
+ * Controller mức giảm học phí (Tuition Discount)
+ * CRUD các mức giảm phí trong bảng fee_discounts.
+ */
 const pool = require('../config/db');
 const { logAction } = require('../utils/auditLog');
 
+/** GET /tuition/discounts — Danh sách mức giảm (active trước). */
 const getDiscounts = async (_req, res) => {
   try {
     const [rows] = await pool.query(
@@ -12,6 +17,7 @@ const getDiscounts = async (_req, res) => {
   }
 };
 
+/** POST /tuition/discounts — Tạo mức giảm mới. */
 const createDiscount = async (req, res) => {
   try {
     const { name, discount_type, discount_value, default_reason, is_active } = req.body;
@@ -34,6 +40,7 @@ const createDiscount = async (req, res) => {
   }
 };
 
+/** PUT /tuition/discounts/:id — Cập nhật mức giảm. */
 const updateDiscount = async (req, res) => {
   try {
     const { name, discount_type, discount_value, default_reason, is_active } = req.body;
@@ -51,6 +58,7 @@ const updateDiscount = async (req, res) => {
   }
 };
 
+/** DELETE /tuition/discounts/:id — Xóa mức giảm và ghi audit log. */
 const deleteDiscount = async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT id, name FROM fee_discounts WHERE id = ?', [req.params.id]);

@@ -1,5 +1,10 @@
+/*
+ * auth.js — Middleware xác thực JWT và phân quyền theo vai trò người dùng.
+ * Cung cấp authenticate, authorize và kiểm tra super admin.
+ */
 const jwt = require('jsonwebtoken');
 
+// Xác minh token Bearer trong header Authorization, gắn payload vào req.user
 const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -16,6 +21,7 @@ const authenticate = (req, res, next) => {
   }
 };
 
+// Chỉ cho phép các role được liệt kê (admin, teacher, student, ...)
 const authorize = (...roles) => (req, res, next) => {
   if (!roles.includes(req.user.role)) {
     return res.status(403).json({ message: 'Không có quyền truy cập' });
@@ -23,6 +29,7 @@ const authorize = (...roles) => (req, res, next) => {
   next();
 };
 
+// Chỉ admin tối cao (admin_scope = 'all') mới được thực hiện thao tác nhạy cảm
 const requireSuperAdmin = (req, res, next) => {
   const { isSuperAdmin } = require('../utils/adminScope');
   if (!isSuperAdmin(req.user)) {

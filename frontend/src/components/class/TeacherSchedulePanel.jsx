@@ -1,3 +1,4 @@
+{/* TeacherSchedulePanel.jsx — Lịch tháng và đặt slot dạy của giáo viên */}
 import { useEffect, useMemo, useState } from 'react';
 import {
   Button, Card, Form, Alert, Spinner, Badge,
@@ -12,6 +13,7 @@ import {
   slotStateKey,
 } from '../../utils/scheduleTimeSlots';
 
+/** Lịch slot dạy theo tháng — props: classId, canManage */
 export default function TeacherSchedulePanel({
   classId, isTeacher, isStudent, currentUserId,
 }) {

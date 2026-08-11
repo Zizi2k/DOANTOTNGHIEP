@@ -1,3 +1,4 @@
+{/* ClassOnlineTab.jsx — Tab học online: bài giảng, link, phiên live */}
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Button, Card, Modal, Form, Alert, Spinner, Badge,
@@ -158,6 +159,7 @@ function JitsiRoom({
   );
 }
 
+/** Tab bài giảng online — props: classId, canManage, isStudent */
 export default function ClassOnlineTab({
   classId, className, canManageClass, user,
 }) {

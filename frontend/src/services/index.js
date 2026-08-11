@@ -1,5 +1,7 @@
+// Tập hợp service gọi API theo module nghiệp vụ (auth, lớp, học phí, v.v.)
 import api from './api';
 
+/** Xác thực và hồ sơ người dùng đăng nhập */
 export const authService = {
   login: (username, code) => api.post('/auth/login', { username, code }),
   logout: () => api.post('/auth/logout'),
@@ -7,6 +9,7 @@ export const authService = {
   updateProfile: (formData) => api.put('/auth/profile', formData),
 };
 
+/** Quản lý tài khoản người dùng (admin, giáo viên, học viên) */
 export const userService = {
   getAll: (classId) => api.get('/users', { params: classId ? { class_id: classId } : {} }),
   getProfile: (id) => api.get(`/users/${id}/profile`),
@@ -23,6 +26,7 @@ export const userService = {
   }),
 };
 
+/** Lớp học: thành viên, import học viên, nhắc bài, xuất điểm */
 export const classService = {
   getAll: (params) => api.get('/classes', { params: params || {} }),
   getShareTargets: (excludeClassId) => api.get('/classes/share-targets', {
@@ -54,6 +58,7 @@ export const classService = {
   exportGradesExcel: (classId) => api.get(`/classes/${classId}/grades-export`, { responseType: 'blob' }),
 };
 
+/** Thông báo trong app */
 export const notificationService = {
   getUnread: () => api.get('/notifications/unread', { skipGlobalLogout: true }),
   getUnreadCount: () => api.get('/notifications/unread-count', { skipGlobalLogout: true }),
@@ -62,6 +67,7 @@ export const notificationService = {
   markAllRead: () => api.post('/notifications/read-all'),
 };
 
+/** Bài giảng / nội dung online theo lớp */
 export const lessonService = {
   getByClass: (classId) => api.get(`/lessons/${classId}`),
   create: (classId, data) => api.post(`/lessons/${classId}`, data),
@@ -69,6 +75,7 @@ export const lessonService = {
   share: (id, targetClassIds) => api.post(`/lessons/${id}/share`, { target_class_ids: targetClassIds }),
 };
 
+/** Bài tập, nộp bài, chấm điểm, phân quyền học viên */
 export const assignmentService = {
   getAll: (classId) => api.get('/assignments', { params: { class_id: classId } }),
   create: (data) => api.post('/assignments', data),
@@ -85,6 +92,7 @@ export const assignmentService = {
   share: (id, targetClassIds) => api.post(`/assignments/${id}/share`, { target_class_ids: targetClassIds }),
 };
 
+/** Trắc nghiệm: tạo, nộp, chấm, import DOCX */
 export const quizService = {
   getAll: (classId) => api.get('/quizzes', { params: { class_id: classId } }),
   getById: (id) => api.get(`/quizzes/${id}`, { skipGlobalLogout: true }),
@@ -120,11 +128,13 @@ export const quizService = {
   share: (id, targetClassIds) => api.post(`/quizzes/${id}/share`, { target_class_ids: targetClassIds }),
 };
 
+/** Công nợ học phí */
 export const feeDebtService = {
   getAll: () => api.get('/fee-debts'),
   delete: (id, data) => api.delete(`/fee-debts/${id}`, { data }),
 };
 
+/** Thảo luận lớp học và bình luận */
 export const discussionService = {
   getByClass: (classId) => api.get(`/discussions/class/${classId}`),
   create: (data) => {
@@ -150,11 +160,13 @@ export const discussionService = {
   toggleLike: (discussionId) => api.post(`/discussions/${discussionId}/like`),
 };
 
+/** Thống kê trang chủ và bảng vinh danh */
 export const dashboardService = {
   getStats: () => api.get('/dashboard'),
   getHonorBoard: (classId) => api.get('/dashboard/honor', { params: { class_id: classId } }),
 };
 
+/** Điểm danh theo buổi / theo tháng */
 export const attendanceService = {
   getByClass: (classId) => api.get(`/attendance/class/${classId}`),
   getAll: (params) => api.get('/attendance', { params }),
@@ -167,6 +179,7 @@ export const attendanceService = {
   }),
 };
 
+/** Lịch học và đặt slot */
 export const scheduleService = {
   getMonth: (classId, month) => api.get(`/schedule/class/${classId}`, { params: { month } }),
   save: (classId, data) => api.put(`/schedule/class/${classId}`, data),
@@ -174,6 +187,7 @@ export const scheduleService = {
   cancelBooking: (slotId) => api.delete(`/schedule/slots/${slotId}/book`),
 };
 
+/** Phiên học online trực tiếp */
 export const onlineSessionService = {
   getByClass: (classId) => api.get('/online-sessions', { params: { class_id: classId } }),
   create: (data) => api.post('/online-sessions', data),
@@ -181,6 +195,7 @@ export const onlineSessionService = {
   delete: (id) => api.delete(`/online-sessions/${id}`),
 };
 
+/** Học phí: hồ sơ, thanh toán, biên lai, báo cáo tháng */
 export const tuitionService = {
   getDiscounts: () => api.get('/tuition/discounts'),
   createDiscount: (data) => api.post('/tuition/discounts', data),
@@ -223,6 +238,7 @@ export const tuitionService = {
   }),
 };
 
+/** Khóa học học viên, ghi danh, chuyển lớp */
 export const studentService = {
   getCourses: (params) => api.get('/students/courses', { params }),
   createCourse: (data) => api.post('/students/courses', data),
@@ -236,6 +252,7 @@ export const studentService = {
   transferClass: (id, data) => api.post(`/students/enroll/${id}/transfer`, data),
 };
 
+/** Nhật ký thao tác và duyệt yêu cầu xóa */
 export const auditService = {
   getLogs: (params) => api.get('/audit/logs', { params }),
   getDeletionRequests: (params) => api.get('/audit/deletion-requests', { params }),
@@ -244,6 +261,7 @@ export const auditService = {
   rejectDeletion: (id, data) => api.post(`/audit/deletion-requests/${id}/reject`, data),
 };
 
+/** Khóa học quảng bá, banner, đăng ký thử */
 export const promoService = {
   getBanners: (params) => api.get('/promo/banners', { params }),
   getCourses: (params) => api.get('/promo/courses', { params }),

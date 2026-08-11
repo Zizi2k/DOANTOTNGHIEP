@@ -1,3 +1,7 @@
+/**
+ * Tích hợp Zalo ZNS (Zalo Notification Service).
+ * Gửi tin nhắn nhắc nhở học viên qua template OA.
+ */
 function normalizePhone(raw) {
   if (!raw) return null;
   const digits = String(raw).replace(/\D/g, '');
@@ -8,14 +12,17 @@ function normalizePhone(raw) {
   return null;
 }
 
+/** Lấy SĐT Zalo từ phone hoặc zalo của học viên */
 function pickPhone(student) {
   return normalizePhone(student.phone) || normalizePhone(student.zalo);
 }
 
+/** Kiểm tra đã cấu hình token và template Zalo OA */
 function isZaloConfigured() {
   return Boolean(process.env.ZALO_ACCESS_TOKEN && process.env.ZALO_TEMPLATE_ID);
 }
 
+/** Gọi API Zalo gửi tin template ZNS */
 async function sendZnsMessage(phone, templateData) {
   const accessToken = process.env.ZALO_ACCESS_TOKEN;
   const templateId = process.env.ZALO_TEMPLATE_ID;
@@ -54,6 +61,7 @@ async function sendZnsMessage(phone, templateData) {
   }
 }
 
+/** Gửi tin nhắc nhở bài chưa hoàn thành qua Zalo ZNS */
 async function sendReminderZalo(student, reminderText, className) {
   const phone = pickPhone(student);
   if (!phone) {

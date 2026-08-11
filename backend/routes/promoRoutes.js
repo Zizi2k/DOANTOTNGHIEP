@@ -1,3 +1,7 @@
+/*
+ * promoRoutes.js — Route khuyến mãi: banner, khóa quảng bá, đăng ký, thêm học viên vào lớp.
+ * Prefix mount: /api/promo
+ */
 const express = require('express');
 const {
   listBanners,
@@ -23,6 +27,7 @@ const router = express.Router();
 
 router.use(authenticate);
 
+// Xem công khai trong app (đã đăng nhập)
 router.get('/banners', listBanners);
 router.get('/courses', listCourses);
 router.get('/registrations', listRegistrations);
@@ -35,6 +40,7 @@ router.patch('/registrations/:id', authorize('admin'), updateRegistrationStatus)
 router.get('/classes/:classId/approved-students', authorize('admin', 'teacher'), listApprovedForClass);
 router.post('/classes/:classId/add-approved', authorize('admin', 'teacher'), addApprovedToClass);
 
+// CRUD banner/khóa promo — admin, upload ảnh kèm multipart
 router.post('/banners', authorize('admin'), uploadMemory.single('image'), createBanner);
 router.put('/banners/:id', authorize('admin'), uploadMemory.single('image'), updateBanner);
 router.delete('/banners/:id', authorize('admin'), deleteBanner);

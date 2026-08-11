@@ -1,3 +1,4 @@
+{/* CourseManager.jsx — Modal quản lý danh mục khóa học (CRUD) */}
 import { useEffect, useState } from 'react';
 import {
   Modal, Form, Button, Alert, Spinner, Table, Badge,
@@ -13,6 +14,7 @@ const emptyForm = {
   is_active: true,
 };
 
+/** props: show, onHide, onChanged */
 export default function CourseManager({ show, onHide, onChanged }) {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);

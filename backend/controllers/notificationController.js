@@ -1,8 +1,13 @@
+/**
+ * Controller thông báo (Notification)
+ * Quản lý thông báo trong app: danh sách, chưa đọc, đánh dấu đã đọc.
+ */
 const pool = require('../config/db');
 const {
   getUnreadForUser, getUnreadCount, listForUser, markRead, markAllRead,
 } = require('../utils/notificationDb');
 
+/** GET /notifications/unread — Tối đa 50 thông báo chưa đọc của user hiện tại. */
 const getUnread = async (req, res) => {
   try {
     const rows = await getUnreadForUser(req.user.id, 50);
@@ -12,6 +17,7 @@ const getUnread = async (req, res) => {
   }
 };
 
+/** GET /notifications/count — Số thông báo chưa đọc. @returns {{ count: number }} */
 const getCount = async (req, res) => {
   try {
     const count = await getUnreadCount(req.user.id);
@@ -21,6 +27,7 @@ const getCount = async (req, res) => {
   }
 };
 
+/** GET /notifications — Danh sách phân trang. Query: limit (max 100), offset. */
 const getList = async (req, res) => {
   try {
     const limit = Math.min(Number(req.query.limit) || 30, 100);
@@ -32,6 +39,7 @@ const getList = async (req, res) => {
   }
 };
 
+/** PATCH /notifications/:id/read — Đánh dấu một thông báo đã đọc. */
 const readOne = async (req, res) => {
   try {
     const ok = await markRead(req.user.id, req.params.id);
@@ -42,6 +50,7 @@ const readOne = async (req, res) => {
   }
 };
 
+/** PATCH /notifications/read-all — Đánh dấu tất cả thông báo đã đọc. */
 const readAll = async (req, res) => {
   try {
     const count = await markAllRead(req.user.id);

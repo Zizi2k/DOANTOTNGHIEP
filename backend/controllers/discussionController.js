@@ -1,3 +1,7 @@
+/**
+ * Controller thảo luận (Discussion)
+ * Bài đăng, bình luận và thích trong phạm vi lớp học.
+ */
 const pool = require('../config/db');
 const { assertClassAccess } = require('../middleware/classAccess');
 const { saveMulterFile } = require('../utils/fileStorage');
@@ -21,6 +25,7 @@ async function assertAdminDiscussionAccess(req, res, discussionId) {
   return classId;
 }
 
+/** GET /classes/:classId/discussions — Danh sách thảo luận kèm like/comment count. */
 const getDiscussions = async (req, res) => {
   try {
     if (!(await assertClassAccess(req.user, req.params.classId, res))) return;
@@ -46,6 +51,7 @@ const getDiscussions = async (req, res) => {
   }
 };
 
+/** POST /discussions — Tạo bài thảo luận (title + content hoặc ảnh). */
 const createDiscussion = async (req, res) => {
   try {
     const { class_id, title } = req.body;
@@ -75,6 +81,7 @@ const createDiscussion = async (req, res) => {
   }
 };
 
+/** PUT /discussions/:discussionId — Sửa thảo luận (chỉ admin). */
 const updateDiscussion = async (req, res) => {
   try {
     const discussionId = req.params.discussionId;
@@ -117,6 +124,7 @@ const updateDiscussion = async (req, res) => {
   }
 };
 
+/** DELETE /discussions/:discussionId — Xóa thảo luận (chỉ admin). */
 const deleteDiscussion = async (req, res) => {
   try {
     const discussionId = req.params.discussionId;
@@ -133,6 +141,7 @@ const deleteDiscussion = async (req, res) => {
   }
 };
 
+/** GET /discussions/:discussionId/comments — Danh sách bình luận. */
 const getComments = async (req, res) => {
   try {
     const classId = await getDiscussionClassId(req.params.discussionId);
@@ -153,6 +162,7 @@ const getComments = async (req, res) => {
   }
 };
 
+/** POST /discussions/:discussionId/comments — Thêm bình luận (hỗ trợ reply parent_id). */
 const addComment = async (req, res) => {
   try {
     const classId = await getDiscussionClassId(req.params.discussionId);
@@ -195,6 +205,7 @@ const addComment = async (req, res) => {
   }
 };
 
+/** POST /discussions/:discussionId/like — Bật/tắt thích bài thảo luận. */
 const toggleLike = async (req, res) => {
   try {
     const classId = await getDiscussionClassId(req.params.discussionId);

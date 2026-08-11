@@ -1,3 +1,4 @@
+{/* ShareContentModal.jsx — Chia sẻ bài học/bài tập/quiz sang lớp khác */}
 import { useEffect, useState } from 'react';
 import { Modal, Form, Button, Alert, Spinner } from 'react-bootstrap';
 import { classService } from '../../services';
@@ -8,6 +9,7 @@ const TYPE_LABELS = {
   quiz: 'bài kiểm tra',
 };
 
+/** Chọn lớp đích chia sẻ nội dung */
 export default function ShareContentModal({
   show,
   onHide,

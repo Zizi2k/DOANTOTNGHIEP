@@ -1,8 +1,10 @@
+{/* LoginPage.jsx — Trang đăng nhập bằng username và mã truy cập */}
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
 
+/** Form đăng nhập; gọi AuthContext.login rồi chuyển về trang chủ */
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [code, setCode] = useState('');
@@ -11,6 +13,7 @@ export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  /** Xử lý submit: hiển thị lỗi mạng/server hoặc thông báo từ API */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');

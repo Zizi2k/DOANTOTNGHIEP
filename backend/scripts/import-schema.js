@@ -1,3 +1,7 @@
+/*
+ * import-schema.js — Import file schema.sql vào database (tùy chọn xóa bảng cũ trước).
+ * Chạy: node scripts/import-schema.js [--fresh] [--env .env]
+ */
 const fs = require('fs');
 const path = require('path');
 const mysql = require('mysql2/promise');
@@ -10,6 +14,7 @@ const fresh = args.includes('--fresh');
 
 require('dotenv').config({ path: envFile });
 
+// Thứ tự drop để tránh lỗi khóa ngoại (bảng con trước)
 const TABLES = [
   'quiz_answers',
   'quiz_submissions',
@@ -59,6 +64,7 @@ async function main() {
 
   const schemaPath = path.join(__dirname, '../../database/schema.sql');
   let sql = fs.readFileSync(schemaPath, 'utf8');
+  // Bỏ lệnh CREATE DATABASE / USE vì đã kết nối sẵn vào DB_NAME
   sql = sql
     .replace(/^CREATE DATABASE IF NOT EXISTS .*;\s*/im, '')
     .replace(/^USE .*;\s*/im, '');

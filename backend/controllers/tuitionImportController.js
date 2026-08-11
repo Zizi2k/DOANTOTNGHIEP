@@ -1,3 +1,7 @@
+/**
+ * Controller import hồ sơ học phí (Tuition Import)
+ * Import/ cập nhật tuition_profiles từ Excel.
+ */
 const XLSX = require('xlsx');
 const fs = require('fs');
 const pool = require('../config/db');
@@ -108,6 +112,7 @@ async function lookupDiscount(conn, name) {
   return rows.length > 0 ? rows[0].id : null;
 }
 
+/** POST /tuition/import/profiles — Import hồ sơ học phí từ Excel. */
 const importProfiles = async (req, res) => {
   if (!req.file) return res.status(400).json({ message: 'Chưa chọn file Excel' });
 
@@ -216,6 +221,7 @@ const importProfiles = async (req, res) => {
   }
 };
 
+/** GET /tuition/import/template — Tải mẫu Excel import học phí. */
 const downloadImportTemplate = async (_req, res) => {
   const headers = [
     'Mã học viên', 'Họ tên', 'Môn học', 'Lớp học', 'Lớp tăng cường', 'Đang học lớp',

@@ -1,6 +1,8 @@
+{/* ProfileNameLink.jsx — Link tên người dùng dẫn tới trang profile */}
 import { Link } from 'react-router-dom';
 import { profilePath } from '../../utils/profilePath';
 
+/** props: userId, name, className — ẩn link nếu không có userId */
 export default function ProfileNameLink({
   userId,
   children,

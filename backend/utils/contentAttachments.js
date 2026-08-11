@@ -1,3 +1,7 @@
+/**
+ * Quản lý đính kèm nội dung học tập (bài giảng, bài tập).
+ * Hỗ trợ file upload, link URL, merge khi cập nhật, và migration từ cột legacy.
+ */
 const pool = require('../config/db');
 const { persistUploadedFile } = require('./fileStorage');
 
@@ -16,6 +20,7 @@ function isValidUrl(url) {
   }
 }
 
+/** Parse trường JSON từ body (string hoặc array) */
 function parseJsonField(value, fallback = []) {
   if (value == null || value === '') return fallback;
   if (Array.isArray(value)) return value;
@@ -44,6 +49,7 @@ async function saveUploadedFiles(files) {
   return saved;
 }
 
+/** Parse mảng link từ body.links hoặc body link_url đơn */
 function parseLinksFromBody(body) {
   const raw = parseJsonField(body.links, []);
   const links = [];
@@ -63,6 +69,7 @@ function parseLinksFromBody(body) {
   return links;
 }
 
+/** Đồng bộ cột file_url/file_type legacy từ phần tử đính kèm đầu tiên */
 function syncLegacyColumns(attachments) {
   const first = attachments[0] || null;
   return {
@@ -71,6 +78,7 @@ function syncLegacyColumns(attachments) {
   };
 }
 
+/** Lấy map resource_id → danh sách đính kèm */
 async function fetchAttachmentsMap(resourceType, resourceIds) {
   if (!resourceIds.length) return new Map();
   const placeholders = resourceIds.map(() => '?').join(',');
@@ -114,6 +122,7 @@ function attachToRows(rows, resourceType, attachmentMap) {
   });
 }
 
+/** Gắn đính kèm vào rows (tự truy vấn DB) */
 async function attachAttachmentsToRows(rows, resourceType) {
   if (!rows.length) return rows;
   const map = await fetchAttachmentsMap(resourceType, rows.map((r) => r.id));
@@ -139,6 +148,7 @@ async function insertAttachments(conn, resourceType, resourceId, attachments) {
   }
 }
 
+/** Xóa hết đính kèm cũ rồi chèn danh sách mới */
 async function replaceAttachments(conn, resourceType, resourceId, attachments) {
   await conn.query(
     'DELETE FROM content_attachments WHERE resource_type = ? AND resource_id = ?',
@@ -147,6 +157,10 @@ async function replaceAttachments(conn, resourceType, resourceId, attachments) {
   await insertAttachments(conn, resourceType, resourceId, attachments);
 }
 
+/**
+ * Merge đính kèm khi cập nhật: giữ file cũ (trừ remove_ids),
+ * thêm file/link mới.
+ */
 async function mergeAttachmentsOnUpdate(conn, resourceType, resourceId, body, uploadedFiles) {
   const removeIds = parseJsonField(body.remove_attachment_ids, [])
     .map(Number)
@@ -184,6 +198,7 @@ async function mergeAttachmentsOnUpdate(conn, resourceType, resourceId, body, up
   return merged;
 }
 
+/** Thu thập đính kèm mới khi tạo tài nguyên */
 async function resolveNewAttachments(body, uploadedFiles) {
   const newFiles = await saveUploadedFiles(uploadedFiles);
   const newLinks = parseLinksFromBody(body);
@@ -207,6 +222,7 @@ async function resolveNewAttachments(body, uploadedFiles) {
   return [...newFiles, ...newLinks];
 }
 
+/** Sao chép đính kèm sang tài nguyên mới (dùng khi chia sẻ lớp) */
 async function duplicateAttachmentsForResource(sourceType, sourceId, targetType, targetId) {
   const [rows] = await pool.query(
     `SELECT file_url, file_type, original_name, sort_order
@@ -270,6 +286,7 @@ async function deleteAttachmentsForResource(resourceType, resourceId) {
   );
 }
 
+/** Migration một lần: chuyển file_url cũ sang content_attachments */
 async function migrateLegacyAttachments() {
   const [[flag]] = await pool.query(
     "SELECT meta_value FROM app_meta WHERE meta_key = 'content_attachments_migrated_v1'",

@@ -1,3 +1,7 @@
+/*
+ * test-db-connection.js — Script kiểm tra kết nối MySQL và liệt kê bảng/user mẫu.
+ * Chạy: node scripts/test-db-connection.js
+ */
 const mysql = require('mysql2/promise');
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 

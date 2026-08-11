@@ -1,3 +1,4 @@
+{/* ProfilePage.jsx — Hồ sơ cá nhân người dùng theo userId */}
 import { useEffect, useRef, useState } from 'react';
 import { Alert, Dropdown, Spinner } from 'react-bootstrap';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -24,6 +25,7 @@ function zaloHref(zalo) {
   return digits ? `https://zalo.me/${digits}` : null;
 }
 
+/** Route /profile/:userId — xem/sửa theo quyền */
 export default function ProfilePage() {
   const { userId } = useParams();
   const { user: me, updateUser } = useAuth();

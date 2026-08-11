@@ -1,3 +1,7 @@
+/**
+ * Controller điểm danh (Attendance)
+ * Buổi điểm danh theo lớp/ngày, báo cáo, xuất PDF tháng; đồng bộ nợ phí khi HV nghỉ luôn.
+ */
 const pool = require('../config/db');
 const { mapPublicStudentRecords } = require('../utils/userProjection');
 const { assertClassAccess } = require('../middleware/classAccess');
@@ -33,6 +37,7 @@ const STATUS_LABELS = {
 
 const DROPPED_SUM = `SUM(CASE WHEN r.status = 'dropped' THEN 1 ELSE 0 END) AS dropped_count`;
 
+/** GET /attendance/classes/:classId — Danh sách buổi điểm danh của lớp. */
 const getSessionsByClass = async (req, res) => {
   try {
     if (!(await assertClassAccess(req.user, req.params.classId, res))) return;
@@ -59,6 +64,7 @@ const getSessionsByClass = async (req, res) => {
   }
 };
 
+/** GET /attendance/reports — Báo cáo tổng hợp. Query: class_id, month; GV chỉ lớp mình. */
 const getAllReports = async (req, res) => {
   try {
     const { class_id, month } = req.query;
@@ -108,6 +114,7 @@ const getAllReports = async (req, res) => {
   }
 };
 
+/** GET /attendance/sessions/:sessionId — Chi tiết buổi + bản ghi từng học viên. */
 const getSessionDetail = async (req, res) => {
   try {
     const [sessions] = await pool.query(
@@ -139,6 +146,7 @@ const getSessionDetail = async (req, res) => {
   }
 };
 
+/** GET /attendance/by-date — Buổi theo class_id + date (cho form nhập). */
 const getSessionByDate = async (req, res) => {
   try {
     const { class_id, date } = req.query;
@@ -164,6 +172,10 @@ const getSessionByDate = async (req, res) => {
   }
 };
 
+/**
+ * POST /attendance — Lưu/cập nhật điểm danh một ngày.
+ * Body: class_id, session_date, records[]. Status dropped → sync fee debt.
+ */
 const submitAttendance = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -259,6 +271,7 @@ const submitAttendance = async (req, res) => {
   }
 };
 
+/** DELETE /attendance/sessions/:sessionId — Xóa buổi điểm danh. */
 const deleteSession = async (req, res) => {
   try {
     const [rows] = await pool.query(
@@ -284,6 +297,7 @@ const deleteSession = async (req, res) => {
   }
 };
 
+/** GET /attendance/export-pdf — Xuất PDF điểm danh tháng. Query: class_id, month. */
 const exportMonthlyPdf = async (req, res) => {
   try {
     const { class_id, month } = req.query;

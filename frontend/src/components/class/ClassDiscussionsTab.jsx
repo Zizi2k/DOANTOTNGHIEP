@@ -1,3 +1,4 @@
+{/* ClassDiscussionsTab.jsx — Tab thảo luận lớp: bài viết, bình luận, like */}
 import { useState, useEffect } from 'react';
 
 import {
@@ -1193,6 +1194,7 @@ function DiscussionCard({ discussion, isAdmin, onUpdated, onEdit }) {
 
 
 
+/** Tab thảo luận — props: classId, canManage, currentUser */
 export default function ClassDiscussionsTab({
 
   classId, discussions, canCreate, isAdmin, onUpdated,

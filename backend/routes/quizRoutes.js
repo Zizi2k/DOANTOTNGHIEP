@@ -1,3 +1,7 @@
+/*
+ * quizRoutes.js — Route bài kiểm tra: CRUD, import DOCX/XLSX, nộp bài, chấm điểm, phân quyền học viên.
+ * Prefix mount: /api/quizzes
+ */
 const express = require('express');
 const {
   getQuizzes, getQuizById, createQuiz, updateQuiz, deleteQuiz,
@@ -12,6 +16,7 @@ const { uploadMemory } = require('../middleware/upload');
 
 const router = express.Router();
 
+// Bộ lọc riêng cho import câu hỏi từ Word/Excel
 const docxOnlyFilter = (_req, file, cb) => {
   const name = (file.originalname || '').toLowerCase();
   if (name.endsWith('.docx') || name.endsWith('.xlsx') || name.endsWith('.xls')) {
@@ -36,6 +41,7 @@ function handleQuizImportUpload(req, res, next) {
   });
 }
 
+// Wrapper: parse multipart nếu có, chuẩn hóa field 'file' thành 'files'
 const withOptionalQuizUpload = (handler) => (req, res, next) => {
   const contentType = req.headers['content-type'] || '';
   if (contentType.includes('multipart/form-data')) {
@@ -70,6 +76,7 @@ router.post('/:id/share', authorize('admin', 'teacher'), async (req, res) => {
     res.status(500).json({ message: 'Lỗi hệ thống', error: err.message });
   }
 });
+// Học viên nộp bài và đính kèm
 router.post('/submit', authorize('student'), submitQuiz);
 router.post('/submit-attachment', authorize('student'), withOptionalQuizUpload(submitQuizAttachment));
 router.put('/submissions/:id/grade', authorize('admin', 'teacher'), gradeQuizSubmission);

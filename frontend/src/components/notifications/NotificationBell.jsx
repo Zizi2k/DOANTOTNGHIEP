@@ -1,3 +1,4 @@
+{/* NotificationBell.jsx — Icon chuông và dropdown danh sách thông báo */}
 import { useState, useEffect, useCallback } from 'react';
 import { Dropdown, Badge, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
@@ -11,6 +12,7 @@ function formatTime(iso) {
   });
 }
 
+/** Polling số thông báo chưa đọc và dropdown danh sách */
 export default function NotificationBell() {
   const [count, setCount] = useState(0);
   const [items, setItems] = useState([]);

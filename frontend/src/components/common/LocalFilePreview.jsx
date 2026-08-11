@@ -1,3 +1,4 @@
+{/* LocalFilePreview.jsx — Preview file File/Blob trước khi upload */}
 import { useEffect, useMemo } from 'react';
 import { Alert } from 'react-bootstrap';
 import { getPreviewKindFromFile } from '../../utils/fileTypes';
@@ -32,6 +33,7 @@ function LocalPreviewBody({ url, kind, fileName, height = 280 }) {
   }
 }
 
+/** props: file (File), height — object URL tạm để preview */
 export default function LocalFilePreview({ file, height = 280 }) {
   const kind = getPreviewKindFromFile(file);
 

@@ -1,6 +1,9 @@
+# render.yaml — Cấu hình triển khai API backend lên Render.com
+# Service Node.js, health check /api/health, biến môi trường DB và JWT
+
 services:
   - type: web
-    name: huynhgia-api
+    name: huynhgia-api  # Tên service API trên Render
     runtime: node
     rootDir: backend
     buildCommand: npm install

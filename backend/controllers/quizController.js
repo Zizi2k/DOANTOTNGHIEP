@@ -1,3 +1,7 @@
+/**
+ * Controller bài kiểm tra (Quiz)
+ * Quiz trắc nghiệm/tự luận, import câu hỏi, nộp bài, chấm điểm và cấu hình hiển thị/truy cập.
+ */
 const pool = require('../config/db');
 const { assertClassAccess, getQuizClassId, getQuizSubmissionClassId } = require('../middleware/classAccess');
 const { handleDeletion } = require('../utils/deletionPolicy');
@@ -102,6 +106,7 @@ async function getStudentQuizSubmission(conn, quizId, studentId) {
   return rows[0] || null;
 }
 
+/** GET /quizzes — Danh sách quiz theo lớp. HS: kèm submission và filter visible/access. */
 const getQuizzes = async (req, res) => {
   try {
     const classId = req.query.class_id;
@@ -158,6 +163,7 @@ const getQuizzes = async (req, res) => {
   }
 };
 
+/** GET /quizzes/:id — Chi tiết quiz, câu hỏi và bài nộp của HS (ẩn đáp án nếu chưa show_results). */
 const getQuizById = async (req, res) => {
   try {
     const [quizzes] = await pool.query('SELECT * FROM quizzes WHERE id = ?', [req.params.id]);
@@ -233,6 +239,7 @@ const getQuizById = async (req, res) => {
   }
 };
 
+/** POST /quizzes — Tạo quiz (câu hỏi trắc nghiệm hoặc đề file/link). */
 const createQuiz = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -287,6 +294,7 @@ const createQuiz = async (req, res) => {
   }
 };
 
+/** PUT /quizzes/:id — Cập nhật quiz và đồng bộ câu hỏi/đính kèm. */
 const updateQuiz = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -372,6 +380,7 @@ const updateQuiz = async (req, res) => {
   }
 };
 
+/** DELETE /quizzes/:id — Xóa bài kiểm tra. */
 const deleteQuiz = async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT id, title, class_id FROM quizzes WHERE id = ?', [
@@ -397,6 +406,7 @@ const deleteQuiz = async (req, res) => {
   }
 };
 
+/** GET /quizzes/:id/submissions — Danh sách bài nộp (GV/admin). */
 const getQuizSubmissions = async (req, res) => {
   try {
     const classId = await getQuizClassId(req.params.id);
@@ -420,6 +430,7 @@ const getQuizSubmissions = async (req, res) => {
   }
 };
 
+/** POST /quizzes/submit — Nộp bài trắc nghiệm online, tự chấm điểm. */
 const submitQuiz = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -529,6 +540,7 @@ const submitQuiz = async (req, res) => {
   }
 };
 
+/** POST /quizzes/import — Import câu hỏi từ file Word/Excel. */
 const importQuizFile = async (req, res) => {
   try {
     if (!req.file?.buffer?.length) {
@@ -566,6 +578,7 @@ const importQuizFile = async (req, res) => {
   }
 };
 
+/** GET /quizzes/import/template — Tải file mẫu import câu hỏi. Query: format=docx|xlsx. */
 const getQuizImportTemplate = async (req, res) => {
   try {
     const format = (req.query.format || 'docx').toLowerCase();
@@ -597,6 +610,7 @@ const getQuizImportTemplate = async (req, res) => {
   }
 };
 
+/** POST /quizzes/submit-attachment — Nộp bài tự luận bằng file/link. */
 const submitQuizAttachment = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -677,6 +691,7 @@ const submitQuizAttachment = async (req, res) => {
   }
 };
 
+/** PUT /quiz-submissions/:id/grade — Chấm thủ công bài nộp file/link (0–10). */
 const gradeQuizSubmission = async (req, res) => {
   try {
     const classId = await getQuizSubmissionClassId(req.params.id);
@@ -717,6 +732,7 @@ const gradeQuizSubmission = async (req, res) => {
   }
 };
 
+/** DELETE /quiz-submissions/:id — Xóa bài nộp quiz. */
 const deleteQuizSubmission = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -742,7 +758,7 @@ const deleteQuizSubmission = async (req, res) => {
   }
 };
 
-/** Delete all submissions for a quiz so every student can retake it. */
+/** POST /quizzes/:id/reset-submissions — Xóa toàn bộ bài nộp để HS làm lại. */
 const resetQuizSubmissions = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -803,6 +819,7 @@ const resetQuizSubmissions = async (req, res) => {
   }
 };
 
+/** PATCH /quizzes/:id/visibility — Ẩn/hiện và visible_from. */
 const setQuizVisibility = async (req, res) => {
   try {
     const classId = await getQuizClassId(req.params.id);
@@ -844,6 +861,7 @@ const setQuizVisibility = async (req, res) => {
   }
 };
 
+/** PATCH /quizzes/:id/show-results — Bật/tắt cho HS xem đáp án sau khi nộp. */
 const setQuizShowResults = async (req, res) => {
   try {
     const classId = await getQuizClassId(req.params.id);
@@ -876,6 +894,7 @@ const setQuizShowResults = async (req, res) => {
   }
 };
 
+/** GET /quizzes/:id/student-access — Cấu hình HS được làm quiz. */
 const getQuizStudentAccess = async (req, res) => {
   try {
     const classId = await getQuizClassId(req.params.id);
@@ -916,6 +935,7 @@ const getQuizStudentAccess = async (req, res) => {
   }
 };
 
+/** PUT /quizzes/:id/student-access — mode all | selected + student_ids. */
 const setQuizStudentAccess = async (req, res) => {
   const conn = await pool.getConnection();
   try {

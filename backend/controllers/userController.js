@@ -1,3 +1,7 @@
+/**
+ * Controller quản lý người dùng (User)
+ * CRUD tài khoản, danh sách admin/giáo viên, hồ sơ công khai và quyền theo phạm vi nhánh HG/EG.
+ */
 const pool = require('../config/db');
 const { assertClassAccess } = require('../middleware/classAccess');
 const { logAction } = require('../utils/auditLog');
@@ -24,6 +28,7 @@ const ROLE_PROFILE_META = {
   },
 };
 
+/** Kiểm tra hai user có chung ít nhất một lớp không. */
 async function shareClassWith(viewerId, targetId) {
   const [shared] = await pool.query(
     `SELECT 1
@@ -36,6 +41,7 @@ async function shareClassWith(viewerId, targetId) {
   return shared.length > 0;
 }
 
+/** Kiểm tra quyền xem trang cá nhân của targetId. */
 async function canViewUserProfile(viewer, targetId) {
   if (!viewer?.id || !targetId) return false;
   if (Number(viewer.id) === Number(targetId)) return true;
@@ -108,6 +114,7 @@ function validateScopedUserManagement(req, { role, code, targetUser } = {}) {
   return null;
 }
 
+/** GET /users/admins — Danh sách tài khoản quản trị. */
 const listAdmins = async (req, res) => {
   try {
     const [rows] = await pool.query(
@@ -122,6 +129,7 @@ const listAdmins = async (req, res) => {
   }
 };
 
+/** GET /users/teachers — Danh sách giáo viên/nhân sự, lọc theo phạm vi nhánh. */
 const listTeachers = async (req, res) => {
   try {
     const scope = getUserScope(req.user);
@@ -144,6 +152,10 @@ const listTeachers = async (req, res) => {
   }
 };
 
+/**
+ * GET /users — Thành viên lớp + giáo viên chưa phân công.
+ * Query: class_id (bắt buộc để có dữ liệu).
+ */
 const getUsers = async (req, res) => {
   try {
     const classId = req.query.class_id;
@@ -212,6 +224,7 @@ function validateAdminPayload(req, role, adminScope, targetUserId) {
   return null;
 }
 
+/** POST /users — Tạo tài khoản (admin phụ chỉ tạo GV/HS trong phạm vi). */
 const createUser = async (req, res) => {
   try {
     const { fullname, username, code, role, admin_scope: adminScope } = req.body;
@@ -255,6 +268,7 @@ const createUser = async (req, res) => {
   }
 };
 
+/** PUT /users/:id — Cập nhật tài khoản, kiểm tra phạm vi và trùng username. */
 const updateUser = async (req, res) => {
   try {
     const { fullname, username, code, role, status, admin_scope: adminScope } = req.body;
@@ -317,6 +331,7 @@ const updateUser = async (req, res) => {
   }
 };
 
+/** DELETE /users/:id — Xóa user; học viên: snapshot nợ phí trước khi xóa. */
 const deleteUser = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -364,6 +379,7 @@ const deleteUser = async (req, res) => {
   }
 };
 
+/** POST /users/:id/avatar — Upload ảnh đại diện (theo quyền vai trò). */
 const uploadUserAvatar = async (req, res) => {
   try {
     if (!req.file) {
@@ -427,6 +443,7 @@ const uploadUserAvatar = async (req, res) => {
   }
 };
 
+/** PUT /users/:id/managed-profile — Admin/GV sửa hồ sơ học viên được quản lý. */
 const updateManagedProfile = async (req, res) => {
   try {
     const targetId = parseInt(req.params.id, 10);
@@ -518,6 +535,7 @@ const updateManagedProfile = async (req, res) => {
   }
 };
 
+/** GET /users/:id/profile — Trang cá nhân công khai (ẩn PII nếu không đủ quyền). */
 const getUserProfile = async (req, res) => {
   try {
     const targetId = parseInt(req.params.id, 10);

@@ -1,3 +1,6 @@
+// Quản lý draft đính kèm (file, link, xóa) khi tạo/sửa bài học, thảo luận, v.v.
+
+/** Trạng thái rỗng khi bắt đầu chỉnh sửa đính kèm */
 export function emptyAttachmentDraft() {
   return {
     existing: [],
@@ -7,6 +10,7 @@ export function emptyAttachmentDraft() {
   };
 }
 
+/** Chuẩn hóa danh sách attachment từ API (mảng hoặc file_url đơn) */
 export function getItemAttachments(item) {
   if (item?.attachments?.length) return item.attachments;
   if (item?.file_url) {
@@ -27,6 +31,7 @@ export function attachmentDraftFromItem(item) {
   };
 }
 
+/** Gộp existing + file mới + link để preview trên UI */
 export function getVisibleAttachments(draft) {
   const keptExisting = draft.existing.filter((a) => !draft.removedIds.includes(a.id));
   const fileItems = draft.newFiles.map((file, idx) => ({
@@ -55,6 +60,7 @@ export function hasAttachmentDraftContent(draft) {
   return getVisibleAttachments(draft).length > 0;
 }
 
+/** Gắn file/link/xóa vào FormData gửi multipart */
 export function appendAttachmentsToFormData(formData, draft) {
   draft.newFiles.forEach((file) => {
     formData.append('files', file);

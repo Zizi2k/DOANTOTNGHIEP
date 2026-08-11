@@ -1,3 +1,7 @@
+/*
+ * onlineSessionRoutes.js — Route phòng học trực tuyến (tạo/kết thúc/xóa phiên).
+ * Prefix mount: /api/online-sessions
+ */
 const express = require('express');
 const {
   getSessions, createSession, endSession, deleteSession,

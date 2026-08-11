@@ -1,3 +1,4 @@
+{/* MainLayout — Khung chính sau đăng nhập: sidebar, topbar, outlet trang con */}
 import { useState, useEffect } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { Spinner } from 'react-bootstrap';
@@ -8,6 +9,7 @@ import Topbar from '../components/layout/Topbar';
 import ScrollRestoration from '../components/common/ScrollRestoration';
 import LoginNotificationModal from '../components/notifications/LoginNotificationModal';
 
+/** Layout bảo vệ route: redirect /login nếu chưa auth; hiển thị menu và nội dung */
 export default function MainLayout() {
   const { user, loading } = useAuth();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -15,11 +17,13 @@ export default function MainLayout() {
   const [loginNotifications, setLoginNotifications] = useState([]);
   const [showLoginNotifications, setShowLoginNotifications] = useState(false);
 
+  // Khóa scroll body khi menu mobile mở
   useEffect(() => {
     document.body.classList.toggle('app-nav-locked', mobileOpen);
     return () => document.body.classList.remove('app-nav-locked');
   }, [mobileOpen]);
 
+  // Học viên: popup thông báo chưa đọc ngay sau khi vào app
   useEffect(() => {
     if (!user || user.role !== 'student') return;
     notificationService.getUnread()

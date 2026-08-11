@@ -1,3 +1,7 @@
+/*
+ * userRoutes.js — Quản lý người dùng: admin, giáo viên, CRUD tài khoản và hồ sơ.
+ * Prefix mount: /api/users
+ */
 const express = require('express');
 const {
   listAdmins,
@@ -17,11 +21,11 @@ const router = express.Router();
 
 router.use(authenticate);
 
-// Đường dẫn tĩnh trước param động
+// Đường dẫn tĩnh trước param động để tránh nhầm :id
 router.get('/admins', authorize('admin'), requireSuperAdmin, listAdmins);
 router.get('/teachers', authorize('admin'), listTeachers);
 
-// Trang cá nhân
+// Trang cá nhân — mọi user đã đăng nhập
 router.get('/:id/profile', getUserProfile);
 // Admin / giáo viên sửa hồ sơ học viên (avatar + thông tin)
 router.put(
@@ -37,6 +41,7 @@ router.post(
   uploadUserAvatar,
 );
 
+// Các route CRUD user chỉ dành cho admin
 router.use(authorize('admin'));
 
 router.get('/', getUsers);

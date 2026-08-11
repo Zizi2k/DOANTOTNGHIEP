@@ -1,3 +1,4 @@
+{/* ContentAttachmentPreview.jsx — Xem trước PDF, ảnh, video, Office, link */}
 import { useEffect, useState } from 'react';
 import { Button, Modal, Badge, Alert } from 'react-bootstrap';
 import api from '../../services/api';
@@ -160,6 +161,7 @@ function PreviewBody({ item, url, kind, absoluteUrl, title, height = 360, active
   }
 }
 
+/** props: attachment hoặc file — render iframe/img/video tùy loại */
 export default function ContentAttachmentPreview({
   item,
   apiBase,

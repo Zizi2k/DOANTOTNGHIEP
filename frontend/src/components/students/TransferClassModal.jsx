@@ -1,8 +1,10 @@
+{/* TransferClassModal.jsx — Modal chuyển học viên sang lớp khác */}
 import { useEffect, useMemo, useState } from 'react';
 import { Modal, Form, Button, Alert, Spinner } from 'react-bootstrap';
 import { studentService } from '../../services';
 import { subjectLabel } from './studentConstants';
 
+/** props: show, enrollment, onHide, onSuccess */
 export default function TransferClassModal({
   show,
   onHide,

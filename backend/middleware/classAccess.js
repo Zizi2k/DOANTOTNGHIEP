@@ -1,7 +1,12 @@
+/*
+ * classAccess.js — Kiểm tra quyền truy cập lớp học theo thành viên, giáo viên và phạm vi admin.
+ * Cung cấp helper tra cứu class_id từ bài học/bài tập/quiz và middleware requireClass*.
+ */
 const pool = require('../config/db');
 const { getUserScope, studentCodeMatchesScope } = require('../utils/adminScope');
 const { teachingStaffRoleSql, isTeachingStaffUser } = require('../utils/teachingStaff');
 
+// Kiểm tra user có trong bảng class_members hay không
 async function isClassMember(userId, classId) {
   const [rows] = await pool.query(
     'SELECT id FROM class_members WHERE class_id = ? AND user_id = ?',
@@ -10,6 +15,7 @@ async function isClassMember(userId, classId) {
   return rows.length > 0;
 }
 
+// Giáo viên/nhân sự giảng dạy (không phải học viên) được phân công lớp
 async function isClassTeacher(userId, classId) {
   const [rows] = await pool.query(
     `SELECT cm.id FROM class_members cm
@@ -21,6 +27,7 @@ async function isClassTeacher(userId, classId) {
   return rows.length > 0;
 }
 
+// Admin phạm vi HG/EG chỉ thấy lớp có học viên thuộc mã trung tâm tương ứng
 async function isClassInUserScope(classId, user) {
   const scope = getUserScope(user);
   if (!scope) return true;
@@ -43,6 +50,7 @@ async function isClassInUserScope(classId, user) {
   return codes.some((code) => studentCodeMatchesScope(code, scope));
 }
 
+// Quản lý lớp: admin toàn quyền hoặc giáo viên được phân công
 async function canManageClass(user, classId) {
   if (!(await isClassInUserScope(classId, user))) return false;
   if (user.role === 'admin') return true;
@@ -50,12 +58,14 @@ async function canManageClass(user, classId) {
   return false;
 }
 
+// Truy cập lớp: thành viên lớp hoặc admin
 async function canAccessClass(user, classId) {
   if (!(await isClassInUserScope(classId, user))) return false;
   if (user.role === 'admin') return true;
   return isClassMember(user.id, classId);
 }
 
+// Trả về false và gửi response nếu không đủ quyền; manage=true yêu cầu quyền quản lý
 async function assertClassAccess(user, classId, res, { manage = false } = {}) {
   if (!classId) {
     res.status(400).json({ message: 'Thiếu thông tin lớp học' });
@@ -75,6 +85,7 @@ async function assertClassAccess(user, classId, res, { manage = false } = {}) {
   return true;
 }
 
+// Helper lấy class_id từ các tài nguyên con (bài học, bài tập, nộp bài)
 async function getLessonClassId(lessonId) {
   const [rows] = await pool.query('SELECT class_id FROM lessons WHERE id = ?', [lessonId]);
   return rows[0]?.class_id;
@@ -110,6 +121,7 @@ async function getQuizSubmissionClassId(submissionId) {
   return rows[0]?.class_id;
 }
 
+// Middleware Express: yêu cầu là thành viên lớp (param mặc định :id)
 const requireClassMember = (param = 'id') => async (req, res, next) => {
   try {
     const classId = req.params[param] || req.params.classId;
@@ -121,6 +133,7 @@ const requireClassMember = (param = 'id') => async (req, res, next) => {
   }
 };
 
+// Middleware Express: yêu cầu quyền quản lý lớp (giáo viên phụ trách hoặc admin)
 const requireClassTeacher = (param = 'id') => async (req, res, next) => {
   try {
     const classId = req.params[param] || req.params.classId;

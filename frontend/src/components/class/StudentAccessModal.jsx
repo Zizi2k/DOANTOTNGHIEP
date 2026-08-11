@@ -1,9 +1,11 @@
+{/* StudentAccessModal.jsx — Phân quyền học viên được xem/nộp từng bài */}
 import { useEffect, useState } from 'react';
 import {
   Modal, Form, Alert, Spinner, Button, Badge,
 } from 'react-bootstrap';
 import { assignmentService, quizService } from '../../services';
 
+/** Bật/tắt quyền từng học viên với một bài */
 export default function StudentAccessModal({
   show, onHide, contentType, contentId, contentTitle, onSaved,
 }) {

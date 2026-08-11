@@ -1,3 +1,4 @@
+{/* TuitionPage.jsx — Quản lý học phí, hồ sơ, thanh toán và báo cáo */}
 import { useEffect, useMemo, useState } from 'react';
 import {
   Tab, Row, Col, Form, Button, Spinner, Alert, Badge,
@@ -27,6 +28,7 @@ import {
 import { CODE_PREFIX_OPTIONS } from '../components/students/studentConstants';
 import { isScopedUser, lockedCodePrefix, scopeLabel } from '../utils/adminScope';
 
+/** Tab hồ sơ, giảm giá, báo cáo tháng — chỉ admin/GV */
 export default function TuitionPage() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('list');

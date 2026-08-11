@@ -1,5 +1,10 @@
+/**
+ * Thao tác thông báo in-app (notifications).
+ * CRUD cơ bản: tạo, liệt kê, đếm chưa đọc, đánh dấu đã đọc.
+ */
 const pool = require('../config/db');
 
+/** Tạo thông báo mới cho user */
 async function createNotification(conn, {
   userId, type, title, body, classId, linkPath, sentBy, zaloStatus, zaloError,
 }) {
@@ -16,6 +21,7 @@ async function createNotification(conn, {
   return result.insertId;
 }
 
+/** Lấy thông báo chưa đọc của user */
 async function getUnreadForUser(userId, limit = 20) {
   const [rows] = await pool.query(
     `SELECT n.*, c.name AS class_name
@@ -29,6 +35,7 @@ async function getUnreadForUser(userId, limit = 20) {
   return rows;
 }
 
+/** Đếm số thông báo chưa đọc */
 async function getUnreadCount(userId) {
   const [rows] = await pool.query(
     'SELECT COUNT(*) AS cnt FROM notifications WHERE user_id = ? AND is_read = 0',
@@ -37,6 +44,7 @@ async function getUnreadCount(userId) {
   return rows[0]?.cnt || 0;
 }
 
+/** Liệt kê thông báo có phân trang */
 async function listForUser(userId, { limit = 30, offset = 0 } = {}) {
   const [rows] = await pool.query(
     `SELECT n.*, c.name AS class_name
@@ -50,6 +58,7 @@ async function listForUser(userId, { limit = 30, offset = 0 } = {}) {
   return rows;
 }
 
+/** Đánh dấu một thông báo đã đọc */
 async function markRead(userId, notificationId) {
   const [result] = await pool.query(
     'UPDATE notifications SET is_read = 1, read_at = NOW() WHERE id = ? AND user_id = ?',
@@ -58,6 +67,7 @@ async function markRead(userId, notificationId) {
   return result.affectedRows > 0;
 }
 
+/** Đánh dấu tất cả thông báo đã đọc */
 async function markAllRead(userId) {
   const [result] = await pool.query(
     'UPDATE notifications SET is_read = 1, read_at = NOW() WHERE user_id = ? AND is_read = 0',

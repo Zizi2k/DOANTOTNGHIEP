@@ -1,5 +1,10 @@
+/*
+ * ensureSchema.js — Migration/schema tự động khi khởi động server.
+ * Tạo bảng/cột thiếu, cập nhật ENUM, seed dữ liệu mặc định và chạy migration một lần.
+ */
 const pool = require('./db');
 
+// SQL tạo bảng phiên học trực tuyến
 const ONLINE_SESSIONS_SQL = `
 CREATE TABLE IF NOT EXISTS online_sessions (
   id INT PRIMARY KEY AUTO_INCREMENT,
@@ -14,6 +19,7 @@ CREATE TABLE IF NOT EXISTS online_sessions (
   FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
 )`;
 
+// Các bảng module học phí (giảm giá, hồ sơ, thanh toán, kỳ thu)
 const TUITION_STATEMENTS = [
   `CREATE TABLE IF NOT EXISTS fee_discounts (
   id INT PRIMARY KEY AUTO_INCREMENT,
@@ -76,12 +82,14 @@ const TUITION_STATEMENTS = [
 )`,
 ];
 
+// Đồng bộ toàn bộ schema; lỗi được log cảnh báo, không làm sập server
 async function ensureSchema() {
   try {
   await pool.query(ONLINE_SESSIONS_SQL);
   for (const stmt of TUITION_STATEMENTS) {
     await pool.query(stmt);
   }
+  // Thêm cột môn học cho lớp (bỏ qua nếu đã tồn tại)
   try {
     await pool.query(
       `ALTER TABLE classes ADD COLUMN subject ENUM('chinese', 'english', 'computer', 'vietnamese') NULL AFTER description`
@@ -136,6 +144,7 @@ async function ensureSchema() {
     }
   }
 
+  // Seed khóa đào tạo mặc định nếu bảng trống
   const [courseCount] = await pool.query('SELECT COUNT(*) AS c FROM training_courses');
   if (courseCount[0].c === 0) {
     await pool.query(
@@ -208,6 +217,7 @@ async function ensureSchema() {
     `UPDATE users SET admin_scope = 'all' WHERE role = 'admin' AND (admin_scope IS NULL OR admin_scope = '')`
   ).catch(() => {});
 
+  // Gộp tài khoản học viên trùng SĐT (chỉ chạy một lần, lưu cờ trong app_meta)
   try {
     await pool.query(
       `CREATE TABLE IF NOT EXISTS app_meta (
@@ -289,6 +299,7 @@ async function ensureSchema() {
     )
   `);
 
+  // Đổi ràng buộc booking: từ một slot một học viên sang unique (slot, student)
   try {
     await pool.query('ALTER TABLE student_schedule_bookings DROP INDEX unique_slot_booking');
   } catch (err) {

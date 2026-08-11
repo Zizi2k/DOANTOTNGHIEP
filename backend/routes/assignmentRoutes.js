@@ -1,3 +1,7 @@
+/*
+ * assignmentRoutes.js — Route bài tập: CRUD, nộp bài, chấm điểm, ẩn/hiện, chia sẻ lớp.
+ * Prefix mount: /api/assignments
+ */
 const express = require('express');
 
 const {
@@ -22,6 +26,7 @@ const MAX_FILES = 30;
 
 
 
+// Hỗ trợ upload nhiều file hoặc một file đơn (field 'file' → 'files')
 const withOptionalMultiUpload = (handler) => (req, res, next) => {
 
   const contentType = req.headers['content-type'] || '';
@@ -98,4 +103,3 @@ router.delete('/:id', authorize('admin', 'teacher'), deleteAssignment);
 
 
 module.exports = router;
-

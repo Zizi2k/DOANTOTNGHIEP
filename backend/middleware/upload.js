@@ -1,3 +1,7 @@
+/*
+ * upload.js — Cấu hình Multer upload tài liệu/bài học (đĩa và bộ nhớ).
+ * Giới hạn loại file và dung lượng tối đa 50MB.
+ */
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -7,6 +11,7 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
+// Phần mở rộng và MIME type được phép (PDF, Office, video, ảnh)
 const ALLOWED_EXTENSIONS = [
   '.pdf', '.doc', '.docx', '.xlsx', '.xls', '.ppt', '.pptx', '.pps', '.ppsx',
   '.mp4', '.avi', '.mov', '.wmv', '.webm', '.mkv',
@@ -27,6 +32,7 @@ const ALLOWED_MIME_TYPES = [
   'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp', 'image/svg+xml',
 ];
 
+// Lưu file lên đĩa với tên duy nhất (timestamp + random)
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
   filename: (_req, file, cb) => {
@@ -36,6 +42,7 @@ const storage = multer.diskStorage({
   },
 });
 
+// Chấp nhận nếu extension HOẶC mime type hợp lệ
 const fileFilter = (_req, file, cb) => {
   const ext = path.extname(file.originalname).toLowerCase();
   const mime = (file.mimetype || '').toLowerCase();
@@ -56,6 +63,7 @@ const upload = multer({
   limits: { fileSize: 50 * 1024 * 1024 },
 });
 
+// Biến thể lưu buffer trong RAM (dùng khi cần xử lý trước khi ghi DB)
 const uploadMemory = multer({
   storage: multer.memoryStorage(),
   fileFilter,

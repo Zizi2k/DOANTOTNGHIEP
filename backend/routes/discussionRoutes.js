@@ -1,3 +1,7 @@
+/*
+ * discussionRoutes.js — Route thảo luận lớp: bài viết, bình luận, thích, ảnh đính kèm.
+ * Prefix mount: /api/discussions
+ */
 const express = require('express');
 const {
   getDiscussions, createDiscussion, updateDiscussion, deleteDiscussion,

@@ -1,5 +1,10 @@
+/**
+ * Sinh và phân tích mã học viên theo môn học.
+ * Hỗ trợ tiền tố HG (Huỳnh Gia) và EG (English Garden).
+ */
 const { normalizeHeader } = require('./tuitionHelpers');
 
+/** Tiền tố mã HV theo môn — chi nhánh Huỳnh Gia */
 const SUBJECT_CODE_PREFIX = {
   english: 'HGTA',
   chinese: 'HGTT',
@@ -7,6 +12,7 @@ const SUBJECT_CODE_PREFIX = {
   vietnamese: 'HGTV',
 };
 
+/** Tiền tố mã HV theo môn — chi nhánh English Garden */
 const SUBJECT_CODE_PREFIX_EG = {
   english: 'EGTA',
   chinese: 'EGTT',
@@ -19,10 +25,12 @@ const ALL_KNOWN_PREFIXES = new Set([
   ...Object.values(SUBJECT_CODE_PREFIX_EG),
 ]);
 
+/** Kiểm tra định dạng mã HV: chữ cái + số */
 function validateStudentCodeFormat(code) {
   return /^[A-Z]{2,10}\d{1,6}$/i.test(String(code || '').trim());
 }
 
+/** Tách mã HV thành tiền tố, số thứ tự và độ dài padding */
 function parseStudentCode(code) {
   const match = String(code || '').trim().toUpperCase().match(/^(.+?)(\d+)$/);
   if (!match) return null;
@@ -33,6 +41,7 @@ function parseStudentCode(code) {
   };
 }
 
+/** Xác định tiền tố mã HV từ môn học và gợi ý prefix (HG/EG) */
 function resolveCodePrefix(subject, prefixHint) {
   if (!SUBJECT_CODE_PREFIX[subject]) {
     throw new Error('Môn học không hợp lệ');
@@ -50,6 +59,7 @@ function resolveCodePrefix(subject, prefixHint) {
   return SUBJECT_CODE_PREFIX[subject];
 }
 
+/** Suy ra môn học từ tiền tố mã HV */
 function inferSubjectFromCodePrefix(prefix) {
   const upper = String(prefix || '').toUpperCase();
   for (const [subject, hgPrefix] of Object.entries(SUBJECT_CODE_PREFIX)) {
@@ -60,6 +70,7 @@ function inferSubjectFromCodePrefix(prefix) {
   return null;
 }
 
+/** Suy ra môn học từ tên lớp (dùng cho lớp legacy không có subject) */
 function inferSubjectFromClassName(name) {
   const n = normalizeHeader(name).replace(/\s+/g, '');
   if (!n) return null;
@@ -70,6 +81,7 @@ function inferSubjectFromClassName(name) {
   return null;
 }
 
+/** Thu thập tất cả mã HV hiện có của một môn (học phí, lớp, legacy) */
 async function collectSubjectCodes(conn, subject) {
   const codes = new Set();
 
@@ -106,6 +118,7 @@ async function collectSubjectCodes(conn, subject) {
   return codes;
 }
 
+/** Sinh mã HV tiếp theo cho môn học, tăng số thứ tự từ mã lớn nhất */
 async function getNextStudentCode(conn, subject, prefixHint) {
   const targetPrefix = resolveCodePrefix(subject, prefixHint);
   const codes = await collectSubjectCodes(conn, subject);

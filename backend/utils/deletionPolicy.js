@@ -1,7 +1,12 @@
+/**
+ * Chính sách xóa tài nguyên.
+ * Admin xóa trực tiếp; giáo viên gửi yêu cầu chờ admin duyệt.
+ */
 const pool = require('../config/db');
 const { logAction } = require('./auditLog');
 const { regenerateClassUsernames } = require('./username');
 
+/** Tìm yêu cầu xóa đang chờ duyệt cho tài nguyên */
 async function findPendingRequest(resourceType, resourceId) {
   const [rows] = await pool.query(
     `SELECT id FROM deletion_requests
@@ -11,6 +16,7 @@ async function findPendingRequest(resourceType, resourceId) {
   return rows[0] || null;
 }
 
+/** Thực thi xóa theo loại tài nguyên */
 async function executeDeletion(resourceType, resourceId, metadata = {}) {
   switch (resourceType) {
     case 'lesson':
@@ -71,6 +77,10 @@ async function executeDeletion(resourceType, resourceId, metadata = {}) {
   }
 }
 
+/**
+ * Xử lý request xóa: admin xóa ngay, giáo viên tạo deletion_request.
+ * Trả response JSON phù hợp (200 hoặc 202).
+ */
 async function handleDeletion(req, res, {
   resourceType,
   resourceId,

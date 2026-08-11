@@ -1,3 +1,7 @@
+/*
+ * classRoutes.js — Route quản lý lớp học: thành viên, import Excel, báo cáo, avatar.
+ * Prefix mount: /api/classes
+ */
 const express = require('express');
 const {
   getClasses, getClassById, createClass, updateClass, uploadClassAvatar, addMember, removeMember,
@@ -19,6 +23,7 @@ router.get('/', getClasses);
 router.get('/share-targets', authorize('admin', 'teacher'), getShareTargetClasses);
 router.post('/', authorize('admin'), createClass);
 
+// Quản lý giáo viên / học viên / import — yêu cầu quyền quản lý lớp
 router.get('/:id/available-teachers', authorize('admin'), getAvailableTeachers);
 router.get('/:id/available-students', authorize('admin', 'teacher'), requireClassTeacher('id'), getAvailableStudents);
 router.get('/:id/import-template', authorize('admin', 'teacher'), requireClassTeacher('id'), downloadTemplate);
@@ -42,6 +47,7 @@ router.delete('/:id/students', authorize('admin'), removeAllStudents);
 router.post('/:id/teachers', authorize('admin'), addTeacher);
 router.delete('/:id/teachers/:userId', authorize('admin'), removeTeacher);
 
+// Chi tiết lớp — thành viên lớp được xem
 router.get('/:id', requireClassMember('id'), getClassById);
 router.post('/:id/avatar', authorize('admin', 'teacher'), (req, res, next) => {
   uploadMemory.single('avatar')(req, res, (err) => {

@@ -1,5 +1,5 @@
-/**
- * Gỡ schema multi-center (centers, center_id) khỏi DB production/dev.
+/*
+ * cleanup-centers.js — Gỡ schema multi-center (centers, center_id) khỏi DB production/dev.
  * Chạy: node backend/scripts/cleanup-centers.js
  * Env: backend/.env.railway hoặc biến DB_* thông thường
  */
@@ -87,6 +87,7 @@ async function main() {
     }
     console.log('Co cot center_id nhung khong co bang centers — chi xoa cot.');
   } else {
+    // Xóa dữ liệu trung tâm EGC trước khi gỡ cột center_id
     const [[egc]] = await conn.query("SELECT id FROM centers WHERE code = 'egc' LIMIT 1");
     if (egc?.id) {
       console.log('Xoa du lieu EGC (center_id =', egc.id, ')...');
@@ -105,6 +106,7 @@ async function main() {
     }
   }
 
+  // Khôi phục unique index không phụ thuộc center_id
   console.log('Khoi phuc unique index...');
   await dropIndexIfExists(conn, 'tuition_profiles', 'unique_center_student_subject');
   await addIndexIfMissing(conn, 'tuition_profiles', 'unique_student_subject', 'student_code, subject');

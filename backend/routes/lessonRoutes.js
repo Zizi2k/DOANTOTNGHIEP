@@ -1,3 +1,7 @@
+/*
+ * lessonRoutes.js — Route bài học theo lớp: danh sách, tạo, xóa, chia sẻ nội dung.
+ * Prefix mount: /api/lessons
+ */
 const express = require('express');
 const { getLessons, createLesson, deleteLesson } = require('../controllers/lessonController');
 const { shareLesson, sendShareResult } = require('../utils/contentShare');
@@ -9,6 +13,7 @@ const MAX_FILES = 30;
 
 router.use(authenticate);
 router.get('/:classId', getLessons);
+// Tạo bài học: hỗ trợ JSON hoặc multipart kèm nhiều file đính kèm
 router.post('/:classId', authorize('admin', 'teacher'), (req, res, next) => {
   const contentType = req.headers['content-type'] || '';
   if (contentType.includes('multipart/form-data')) {

@@ -1,3 +1,7 @@
+/**
+ * Controller import học viên theo lớp (Import)
+ * Import Excel học viên vào lớp; admin có thể kèm dữ liệu học phí.
+ */
 const XLSX = require('xlsx');
 const pool = require('../config/db');
 const { buildStudentUsername, extractStudentNumber, ensureUniqueUsername, regenerateClassUsernames } = require('../utils/username');
@@ -330,6 +334,7 @@ async function upsertTuitionFromImport(conn, {
   return 'created';
 }
 
+/** POST /classes/:id/import — Import file Excel học viên vào lớp. */
 const importStudents = async (req, res) => {
   const conn = await pool.getConnection();
   let filePath = req.file?.path;
@@ -461,6 +466,7 @@ const importStudents = async (req, res) => {
   }
 };
 
+/** GET /classes/:id/import/template — Tải file mẫu import học viên. */
 const downloadTemplate = async (req, res) => {
   try {
     const [classes] = await pool.query('SELECT id, name, code, subject FROM classes WHERE id = ?', [req.params.id]);

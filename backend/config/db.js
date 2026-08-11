@@ -1,6 +1,11 @@
+/*
+ * db.js — Cấu hình pool kết nối MySQL dùng chung cho toàn bộ backend.
+ * Đọc biến môi trường DB_* hoặc MYSQL* (tương thích Railway/Heroku).
+ */
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
+// Pool tái sử dụng kết nối, giới hạn 10 connection đồng thời
 const pool = mysql.createPool({
   host: process.env.DB_HOST || process.env.MYSQLHOST || 'localhost',
   port: Number(process.env.DB_PORT || process.env.MYSQLPORT || 3306),

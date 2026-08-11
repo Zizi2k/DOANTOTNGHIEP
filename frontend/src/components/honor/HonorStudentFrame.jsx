@@ -1,9 +1,11 @@
+{/* HonorStudentFrame.jsx — Khung hiển thị học viên trên bảng vinh danh */}
 import { Link } from 'react-router-dom';
 import { getAvatarUrl, getInitials } from '../../utils/avatar';
 import { profilePath } from '../../utils/profilePath';
 
 const RANK_LABELS = { 1: 'TOP 1', 2: 'TOP 2', 3: 'TOP 3' };
 
+/** props: student, rank, size — avatar, tên và hạng */
 export default function HonorStudentFrame({ student, rank, size = 'md' }) {
   if (!student) {
     return (

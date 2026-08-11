@@ -1,3 +1,7 @@
+/**
+ * Controller học phí (Tuition)
+ * Hồ sơ học phí, phiếu thu, kỳ thu, báo cáo tháng và xuất PDF phiếu thu.
+ */
 const pool = require('../config/db');
 const { enrichProfile, parseAmount, SUBJECTS, resolveTuitionAmounts } = require('../utils/tuitionHelpers');
 const { PROFILE_SELECT } = require('../utils/tuitionProfileDb');
@@ -171,6 +175,7 @@ async function buildMonthlyReportStudents(subject, month, user, classIds = []) {
   };
 }
 
+/** GET /tuition/profiles — Danh sách hồ sơ. Query: subject, class_id, search, status, code_prefix. */
 const getProfiles = async (req, res) => {
   try {
     const { subject, class_id, search, status, code_prefix } = req.query;
@@ -236,6 +241,7 @@ const getProfiles = async (req, res) => {
   }
 };
 
+/** GET /tuition/profiles/:id — Chi tiết hồ sơ kèm lịch sử thanh toán. */
 const getProfileById = async (req, res) => {
   try {
     const [rows] = await pool.query(`${PROFILE_SELECT} WHERE tp.id = ?`, [req.params.id]);
@@ -258,6 +264,7 @@ const getProfileById = async (req, res) => {
   }
 };
 
+/** POST /tuition/profiles — Tạo hồ sơ học phí mới. */
 const createProfile = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -332,6 +339,7 @@ const createProfile = async (req, res) => {
   }
 };
 
+/** PUT /tuition/profiles/:id — Cập nhật hồ sơ học phí. */
 const updateProfile = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -404,6 +412,7 @@ const updateProfile = async (req, res) => {
   }
 };
 
+/** DELETE /tuition/profiles/:id — Xóa hồ sơ học phí. */
 const deleteProfile = async (req, res) => {
   try {
     const [profiles] = await pool.query(
@@ -432,6 +441,7 @@ const deleteProfile = async (req, res) => {
   }
 };
 
+/** POST /tuition/payments — Ghi nhận phiếu thu mới. */
 const createPayment = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -487,6 +497,7 @@ const createPayment = async (req, res) => {
   }
 };
 
+/** PUT /tuition/payments/:id — Sửa phiếu thu. */
 const updatePayment = async (req, res) => {
   try {
     const { payment_type, amount, method, payment_date, period_month, note, book_no, receipt_no } = req.body;
@@ -568,6 +579,7 @@ const updatePayment = async (req, res) => {
   }
 };
 
+/** DELETE /tuition/payments/:id — Xóa phiếu thu. */
 const deletePayment = async (req, res) => {
   try {
     const [payments] = await pool.query(
@@ -600,6 +612,7 @@ const deletePayment = async (req, res) => {
   }
 };
 
+/** GET /tuition/periods — Danh sách kỳ báo cáo. Query: subject, month. */
 const getPeriods = async (req, res) => {
   try {
     const { subject, month } = req.query;
@@ -616,6 +629,7 @@ const getPeriods = async (req, res) => {
   }
 };
 
+/** POST /tuition/periods — Tạo kỳ báo cáo thu theo môn/tháng. */
 const createPeriod = async (req, res) => {
   try {
     const { period_month, subject, title, note } = req.body;
@@ -637,6 +651,7 @@ const createPeriod = async (req, res) => {
   }
 };
 
+/** GET /tuition/reports/monthly — Báo cáo thu tháng theo môn. Query: subject, month, class_ids. */
 const getMonthlyReport = async (req, res) => {
   try {
     const { subject, month } = req.query;
@@ -663,6 +678,7 @@ const getMonthlyReport = async (req, res) => {
   }
 };
 
+/** GET /tuition/reports/monthly/pdf — Xuất PDF báo cáo thu tháng. */
 const exportMonthlyPdf = async (req, res) => {
   try {
     const { subject, month } = req.query;
@@ -717,6 +733,7 @@ const exportMonthlyPdf = async (req, res) => {
   }
 };
 
+/** GET /tuition/payments/:id/receipt — PDF phiếu thu Mẫu 01-TT (admin hoặc HV sở hữu). */
 const getPaymentReceiptPdf = async (req, res) => {
   try {
     const row = await fetchPaymentWithProfile(req.params.id);
@@ -744,6 +761,7 @@ const getPaymentReceiptPdf = async (req, res) => {
   }
 };
 
+/** GET /tuition/my-receipts — Học sinh xem phiếu thu của mình. */
 const getStudentReceipts = async (req, res) => {
   try {
     if (req.user.role !== 'student') {

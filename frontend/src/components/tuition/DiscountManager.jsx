@@ -1,3 +1,4 @@
+{/* DiscountManager.jsx — CRUD mức giảm giá học phí */}
 import { useEffect, useState } from 'react';
 import { Table, Button, Modal, Form, Badge, Spinner } from 'react-bootstrap';
 import { tuitionService } from '../../services';
@@ -9,6 +10,7 @@ const emptyForm = {
   name: '', discount_type: 'fixed', discount_value: '', default_reason: '', is_active: true,
 };
 
+/** Quản lý danh sách mức giảm giá */
 export default function DiscountManager() {
   const [discounts, setDiscounts] = useState([]);
   const [loading, setLoading] = useState(true);

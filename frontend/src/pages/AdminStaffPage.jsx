@@ -1,3 +1,4 @@
+{/* AdminStaffPage.jsx — Quản lý nhân sự admin và giáo viên */}
 import { useEffect, useState } from 'react';
 import {
   Table, Button, Modal, Form, Spinner, Badge, Alert,
@@ -31,6 +32,7 @@ function scopeBadge(scope) {
   return <Badge bg="secondary">{scope}</Badge>;
 }
 
+/** Bảng admin/GV trong scope, tạo tài khoản mới */
 export default function AdminStaffPage() {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();

@@ -1,12 +1,18 @@
+/**
+ * Import câu hỏi trắc nghiệm từ file Excel (.xlsx).
+ * Hỗ trợ bảng cột hoặc định dạng dòng giống file Word.
+ */
 const XLSX = require('xlsx');
 const { parseQuizLines, finalizeQuestion } = require('./quizDocxParser');
 
+/** Chuẩn hóa cột đáp án đúng về A-D */
 function normalizeAnswer(value) {
   const text = String(value || '').trim().toUpperCase();
   const match = text.match(/^([A-D])/);
   return match ? match[1] : '';
 }
 
+/** Parse sheet dạng bảng: Câu hỏi | A | B | C | D | Đáp án */
 function parseTableRows(rows) {
   const questions = [];
   for (let i = 0; i < rows.length; i += 1) {
@@ -44,6 +50,7 @@ function parseTableRows(rows) {
   return questions;
 }
 
+/** Parse buffer xlsx — thử bảng trước, fallback định dạng dòng */
 function parseQuizXlsx(buffer) {
   const workbook = XLSX.read(buffer, { type: 'buffer' });
   const sheetName = workbook.SheetNames[0];
@@ -71,6 +78,7 @@ function parseQuizXlsx(buffer) {
   );
 }
 
+/** Tạo file xlsx mẫu import trắc nghiệm */
 function generateQuizSampleXlsx() {
   const rows = [
     ['Câu hỏi', 'Đáp án A', 'Đáp án B', 'Đáp án C', 'Đáp án D', 'Đáp án đúng'],

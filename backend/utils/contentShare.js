@@ -1,8 +1,13 @@
+/**
+ * Chia sẻ nội dung (bài giảng, bài tập, bài kiểm tra) sang lớp khác.
+ * Sao chép metadata và đính kèm, quiz kèm cả câu hỏi.
+ */
 const pool = require('../config/db');
 const { canManageClass } = require('../middleware/classAccess');
 const { logAction } = require('../utils/auditLog');
 const { duplicateAttachmentsForResource } = require('./contentAttachments');
 
+/** Kiểm tra quyền quản lý lớp nguồn và các lớp đích */
 async function validateShareTargets(user, sourceClassId, targetClassIds) {
   if (!(await canManageClass(user, sourceClassId))) {
     return { ok: false, status: 403, message: 'Bạn không được phân công quản lý lớp học này' };
@@ -36,6 +41,7 @@ async function validateShareTargets(user, sourceClassId, targetClassIds) {
   return { ok: true, targets };
 }
 
+/** Sao chép bài giảng sang các lớp đích */
 async function shareLesson(user, lessonId, targetClassIds) {
   const [lessons] = await pool.query('SELECT * FROM lessons WHERE id = ?', [lessonId]);
   if (!lessons.length) {
@@ -81,6 +87,7 @@ async function shareLesson(user, lessonId, targetClassIds) {
   };
 }
 
+/** Sao chép bài tập sang các lớp đích */
 async function shareAssignment(user, assignmentId, targetClassIds) {
   const [rows] = await pool.query('SELECT * FROM assignments WHERE id = ?', [assignmentId]);
   if (!rows.length) {
@@ -135,6 +142,7 @@ async function shareAssignment(user, assignmentId, targetClassIds) {
   };
 }
 
+/** Sao chép bài kiểm tra kèm câu hỏi sang các lớp đích (transaction) */
 async function shareQuiz(user, quizId, targetClassIds) {
   const conn = await pool.getConnection();
   try {
@@ -208,6 +216,7 @@ async function shareQuiz(user, quizId, targetClassIds) {
   }
 }
 
+/** Trả response HTTP chuẩn cho kết quả chia sẻ */
 function sendShareResult(res, result) {
   if (!result.ok) {
     return res.status(result.status).json({ message: result.message });

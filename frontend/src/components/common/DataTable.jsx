@@ -1,8 +1,10 @@
+{/* DataTable.jsx — Bảng dữ liệu bọc ModuleSection và loading mềm */}
 import { Spinner } from 'react-bootstrap';
 import ModuleSection from '../layout/ModuleSection';
 import LoadingOverlay from './LoadingOverlay';
 import { useSoftLoading } from '../../hooks/useSoftLoading';
 
+/** props: children (thead/tbody), title, icon, count, actions, loading */
 export default function DataTable({
   children,
   className = '',
@@ -49,6 +51,7 @@ export default function DataTable({
   );
 }
 
+/** Trạng thái rỗng khi bảng không có dữ liệu */
 export function DataTableEmpty({ icon = 'bi-inbox', message, hint }) {
   return (
     <tr>

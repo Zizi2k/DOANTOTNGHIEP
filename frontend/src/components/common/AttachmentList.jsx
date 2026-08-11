@@ -1,6 +1,8 @@
+{/* AttachmentList.jsx — Danh sách file đính kèm chỉ xem (không chỉnh sửa) */}
 import ContentAttachmentPreview from './ContentAttachmentPreview';
 import { getItemAttachments } from '../../utils/attachmentHelpers';
 
+/** props: item — bài học/thảo luận có attachments hoặc file_url */
 export default function AttachmentList({
   item,
   apiBase,

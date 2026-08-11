@@ -1,3 +1,7 @@
+/**
+ * Controller bài tập (Assignment)
+ * Giao bài, nộp bài, chấm điểm, hiển thị và giới hạn học sinh được làm.
+ */
 const pool = require('../config/db');
 const {
   assertClassAccess, getAssignmentClassId, getSubmissionClassId,
@@ -27,6 +31,7 @@ const {
   deleteSubmissionWithAttachments,
 } = require('../utils/submissionAttachments');
 
+/** GET /assignments — Danh sách bài tập. Query: class_id. HS thấy bài visible + allowed. */
 const getAssignments = async (req, res) => {  try {
     const classId = req.query.class_id;
 
@@ -78,6 +83,7 @@ const getAssignments = async (req, res) => {  try {
   }
 };
 
+/** POST /assignments — Tạo bài tập kèm file/link đính kèm. */
 const createAssignment = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -126,6 +132,7 @@ const createAssignment = async (req, res) => {
   }
 };
 
+/** PUT /assignments/:id — Cập nhật bài tập và đính kèm. */
 const updateAssignment = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -179,6 +186,7 @@ const updateAssignment = async (req, res) => {
   }
 };
 
+/** DELETE /assignments/:id — Xóa bài tập. */
 const deleteAssignment = async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT id, title, class_id FROM assignments WHERE id = ?', [
@@ -204,6 +212,7 @@ const deleteAssignment = async (req, res) => {
   }
 };
 
+/** POST /submissions — Học sinh nộp/cập nhật bài (chặn nếu đã chấm điểm). */
 const uploadSubmission = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -282,6 +291,7 @@ const uploadSubmission = async (req, res) => {
   }
 };
 
+/** GET /assignments/:id/submissions — Danh sách bài nộp (GV/admin). */
 const getSubmissions = async (req, res) => {
   try {
     const classId = await getAssignmentClassId(req.params.id);
@@ -303,6 +313,7 @@ const getSubmissions = async (req, res) => {
   }
 };
 
+/** PUT /submissions/:id/grade — Chấm điểm 0–10 và feedback. */
 const gradeSubmission = async (req, res) => {
   try {
     const classId = await getSubmissionClassId(req.params.id);
@@ -329,6 +340,7 @@ const gradeSubmission = async (req, res) => {
   }
 };
 
+/** DELETE /submissions/:id — Xóa bài nộp của học sinh. */
 const deleteSubmission = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -354,6 +366,7 @@ const deleteSubmission = async (req, res) => {
   }
 };
 
+/** PATCH /assignments/:id/visibility — Ẩn/hiện và visible_from. */
 const setAssignmentVisibility = async (req, res) => {
   try {
     const classId = await getAssignmentClassId(req.params.id);
@@ -395,6 +408,7 @@ const setAssignmentVisibility = async (req, res) => {
   }
 };
 
+/** GET /assignments/:id/student-access — Cấu hình HS được làm bài. */
 const getAssignmentStudentAccess = async (req, res) => {
   try {
     const classId = await getAssignmentClassId(req.params.id);
@@ -435,6 +449,7 @@ const getAssignmentStudentAccess = async (req, res) => {
   }
 };
 
+/** PUT /assignments/:id/student-access — mode all | selected + student_ids. */
 const setAssignmentStudentAccess = async (req, res) => {
   const conn = await pool.getConnection();
   try {

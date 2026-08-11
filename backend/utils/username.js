@@ -1,3 +1,7 @@
+/**
+ * Sinh và quản lý username học viên.
+ * Format: slug(họ tên) + số từ mã HV, ví dụ nguyenvana0014.
+ */
 function slugifyFullname(fullname) {
   return String(fullname || '')
     .trim()
@@ -18,6 +22,7 @@ function extractStudentNumber(code, username, fallbackOrdinal = 1) {
   return String(fallbackOrdinal).padStart(2, '0');
 }
 
+/** Ghép slug họ tên + số HV thành username cơ sở */
 function buildStudentUsername(fullname, studentNumber) {
   const slug = slugifyFullname(fullname);
   if (!slug || studentNumber == null || studentNumber === '') return null;
@@ -35,6 +40,7 @@ async function isUsernameTaken(conn, username, excludeUserId = null) {
   return rows.length > 0;
 }
 
+/** Đảm bảo username không trùng bằng cách thêm suffix số */
 async function ensureUniqueUsername(conn, baseUsername, excludeUserId = null) {
   if (!baseUsername) return null;
   let candidate = baseUsername;
@@ -46,6 +52,7 @@ async function ensureUniqueUsername(conn, baseUsername, excludeUserId = null) {
   return candidate;
 }
 
+/** Tạo lại username cho tất cả học viên trong lớp (sau khi xóa/thêm thành viên) */
 async function regenerateClassUsernames(conn, classId) {
   const [students] = await conn.query(
     `SELECT u.id, u.fullname, u.code, u.username

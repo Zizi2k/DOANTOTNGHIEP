@@ -1,6 +1,8 @@
+{/* ReceiptListModal.jsx — Modal danh sách biên lai của một hồ sơ học phí */}
 import { Modal, Table, Button, Badge } from 'react-bootstrap';
 import { formatMoney, PAYMENT_TYPE_LABELS, displayBookNo, displayReceiptNo } from './tuitionConstants';
 
+/** props: show, onHide, profile, payments */
 export default function ReceiptListModal({
   show, onHide, payments, onViewReceipt, onEditPayment, onDeletePayment,
 }) {
