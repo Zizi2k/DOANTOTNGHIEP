@@ -260,7 +260,26 @@ export const auditService = {
   approveDeletion: (id, data) => api.post(`/audit/deletion-requests/${id}/approve`, data),
   rejectDeletion: (id, data) => api.post(`/audit/deletion-requests/${id}/reject`, data),
 };
+// ==============================
+// AI ASSISTANT SERVICE
+// ==============================
 
+export const aiService = {
+
+  chat: async (message) => {
+
+    const response = await api.post(
+      '/ai/chat',
+      {
+        message,
+      }
+    );
+
+    return response.data;
+
+  },
+
+};
 /** Khóa học quảng bá, banner, đăng ký thử */
 export const promoService = {
   getBanners: (params) => api.get('/promo/banners', { params }),
@@ -289,4 +308,5 @@ export const promoService = {
     `/promo/classes/${classId}/add-approved`,
     { student_user_id: studentUserId },
   ),
+  
 };

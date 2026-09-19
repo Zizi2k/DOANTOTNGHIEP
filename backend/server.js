@@ -26,6 +26,7 @@ const feeDebtRoutes = require('./routes/feeDebtRoutes');
 const fileRoutes = require('./routes/fileRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const promoRoutes = require('./routes/promoRoutes');
+const aiRoutes = require('./routes/aiRoutes');
 const { ensureSchema } = require('./config/ensureSchema');
 const pool = require('./config/db');
 
@@ -69,6 +70,8 @@ app.use('/api/fee-debts', feeDebtRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/promo', promoRoutes);
+// Đăng ký route cho Trợ lý AI Huỳnh Gia
+app.use('/api/ai', aiRoutes);
 
 // Kiểm tra sức khỏe API (không cần DB)
 app.get('/api/health', (_req, res) => {

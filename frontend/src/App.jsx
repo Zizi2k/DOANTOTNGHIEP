@@ -19,6 +19,7 @@ import AuditPage from './pages/AuditPage';
 import MyReceiptsPage from './pages/MyReceiptsPage';
 import ProfilePage from './pages/ProfilePage';
 import PromoCoursesPage from './pages/PromoCoursesPage';
+import AIChatWindow from './components/ai/AIChatWindow';
 
 /** Component gốc: bọc AuthProvider, xử lý phiên và định nghĩa toàn bộ route */
 function App() {
@@ -47,7 +48,10 @@ function App() {
             <Route path="/my-receipts" element={<MyReceiptsPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
+          
         </Routes>
+         {/* Trợ lý AI */}
+      <AIChatWindow />
       </BrowserRouter>
     </AuthProvider>
   );
